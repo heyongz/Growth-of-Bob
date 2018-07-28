@@ -1,9 +1,9 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 function Level2() {
-    this.kCharacters = "assets/pictures/characters.png";
-    this.kTeen = "assets/pictures/teen.png";
-    this.kBackground = "assets/pictures/background2.png";
+    this.kTeen = "assets/pictures/Teen.png";
+    this.kComp = "assets/pictures/Competitor.png";
+    this.kBackground = "assets/pictures/bg2.png";
     this.kFood = "assets/pictures/food.png";
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kCue = "assets/sounds/cue.wav";
@@ -35,10 +35,10 @@ gEngine.Core.inheritPrototype(Level2, Scene);
 
 
 Level2.prototype.loadScene = function () {
-    gEngine.Textures.loadTexture(this.kCharacters);
+    gEngine.Textures.loadTexture(this.kTeen);
+    gEngine.Textures.loadTexture(this.kComp);
     gEngine.Textures.loadTexture(this.kBackground);
     gEngine.Textures.loadTexture(this.kFood);
-    gEngine.Textures.loadTexture(this.kTeen);
 
     gEngine.AudioClips.loadAudio(this.kBgClip);
     gEngine.AudioClips.loadAudio(this.kEat);
@@ -48,10 +48,10 @@ Level2.prototype.loadScene = function () {
 
 Level2.prototype.unloadScene = function () {
     gEngine.LayerManager.cleanUp();
-    gEngine.Textures.unloadTexture(this.kCharacters);
+    gEngine.Textures.unloadTexture(this.kTeen);
+    gEngine.Textures.unloadTexture(this.kComp);
     gEngine.Textures.unloadTexture(this.kBackground);
     gEngine.Textures.unloadTexture(this.kFood);
-    gEngine.Textures.loadTexture(this.kTeen);
 
     gEngine.AudioClips.unloadAudio(this.kBgClip);
     gEngine.AudioClips.unloadAudio(this.kEat);
@@ -68,10 +68,10 @@ Level2.prototype.unloadScene = function () {
                 nextLevel = new Level2();
                 break;
             case 4:
-                nextLevel = new Level4("assets/pictures/win.png");
+                nextLevel = new End("assets/pictures/win.png");
                 break;
             case 5:
-                nextLevel = new Level4("assets/pictures/fail.png");
+                nextLevel = new End("assets/pictures/fail.png");
                 break;
         }
         gEngine.Core.startScene(nextLevel);
@@ -103,12 +103,12 @@ Level2.prototype.initialize = function () {
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
 
     this.mAllHeros = new GameObjectSet();
-    this.mAllHeros.addToSet(new Hero2(this.kTeen, 10, this.centerX, this.centerY));
+    this.mAllHeros.addToSet(new Hero(this.kTeen, 10, this.centerX, this.centerY));
 
 
     this.mAllComps = new GameObjectSet();
     for (let i = 0; i < 3; i++) {
-        this.mAllComps.addToSet(new Competitor(this.kCharacters));
+        this.mAllComps.addToSet(new Competitor(this.kComp));
     }
 
     this.mAllFood = new GameObjectSet();
@@ -227,50 +227,50 @@ Level2.prototype.heroUpdate = function () {
                     var mAcceleration = 60;
                     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)){
                         if(gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                            var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)), mHeroPosY + (mHeroSize/Math.sqrt(2)));
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)), mHeroPosY + (mHeroSize/Math.sqrt(2)));
                             mNewHero.setVX(-mAcceleration/Math.sqrt(2));
                             mNewHero.setVY(mAcceleration/Math.sqrt(2));
                         }
                         else if(gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                            var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)), mHeroPosY + (mHeroSize/Math.sqrt(2)));
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)), mHeroPosY + (mHeroSize/Math.sqrt(2)));
                             mNewHero.setVX(mAcceleration/Math.sqrt(2));
                             mNewHero.setVY(mAcceleration/Math.sqrt(2));
                         }
                         else{
-                            var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX, mHeroPosY + (mHeroSize/2));
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX, mHeroPosY + (mHeroSize/2));
                             mNewHero.setVX(mHeroVx);
                             mNewHero.setVY(mAcceleration);
                         }
                     }
                     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.S) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Down)){
                         if(gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                            var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)), mHeroPosY - (mHeroSize/Math.sqrt(2)));
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)), mHeroPosY - (mHeroSize/Math.sqrt(2)));
                             mNewHero.setVX(-mAcceleration/Math.sqrt(2));
                             mNewHero.setVY(-mAcceleration/Math.sqrt(2));
                         }
                         else if(gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                            var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)), mHeroPosY - (mHeroSize/Math.sqrt(2)));
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)), mHeroPosY - (mHeroSize/Math.sqrt(2)));
                             mNewHero.setVX(mAcceleration/Math.sqrt(2));
                             mNewHero.setVY(-mAcceleration/Math.sqrt(2));
                         }
                         else{
-                            var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX, mHeroPosY - (mHeroSize/2));
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX, mHeroPosY - (mHeroSize/2));
                             mNewHero.setVX(mHeroVx);
                             mNewHero.setVY(-mAcceleration);
                         }
                     }
                     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                        var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/2), mHeroPosY);
+                        var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/2), mHeroPosY);
                         mNewHero.setVX(-mAcceleration);
                         mNewHero.setVY(mHeroVy);
                     }
                     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                        var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/2), mHeroPosY);
+                        var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/2), mHeroPosY);
                         mNewHero.setVX(+mAcceleration);
                         mNewHero.setVY(mHeroVy);
                     }
                     else {
-                        var mNewHero = new Hero2(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/4), mHeroPosY);
+                        var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/4), mHeroPosY);
                         obj.getXform().setPosition(mHeroPosX - (mHeroSize/4), mHeroPosY);
                         mNewHero.setVX(mAcceleration/2);
                         mNewHero.setVY(0);
@@ -397,7 +397,7 @@ Level2.prototype.detectCollision = function(){
                     hero.incWeight(comp.getWeight());
                     this.mAllComps.removeFromSet(comp);
                     j--;    //从set中删除后在下一轮循环下标会加1，因此提前减1
-                    if(hero.getWeight() >= this.weight){     //TODO
+                    if(hero.getWeight() >= this.weight && this.mAllComps.size() === 0){     //TODO
                         this.mRestart = true;
                         this.tag = 4;
                         gEngine.GameLoop.stop();

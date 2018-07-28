@@ -17,7 +17,7 @@ function Scene() {}
 
 //<editor-fold desc="functions subclass should override">
 /**
- * Level0 Scene: must load all the scene contents when done <p>
+ * Begin Scene: must load all the scene contents when done <p>
  *   => start the GameLoop<p>
  * The game loop will call initialize and then update/draw
  * @memberOf Scene

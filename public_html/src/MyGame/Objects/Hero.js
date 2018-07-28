@@ -10,12 +10,11 @@ function Hero(spriteTexture, weight, posX, posY) {
     this.mDye.setColor([1, 1, 1, 0]);
     this.mDye.getXform().setPosition(posX, posY);
     this.mDye.getXform().setSize(this.radius, this.radius);
-    this.mDye.setElementPixelPositions(0, 820, 1024, 2048);
+    this.mDye.setElementPixelPositions(0, 1024, 0, 1024);
     GameObject.call(this, this.mDye);
 
     var r = new RigidCircle(this.getXform(), 0.25*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
     this.setRigidBody(r);
-    // this.toggleDrawRigidShape();
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
 
@@ -96,7 +95,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
                     this.vX = 0;
             }
         }
-        this.mDye.setElementPixelPositions(820*3, 820*4, 1024, 2048);
+        this.mDye.setElementPixelPositions(1024*3, 1024*4, 0, 1024);
     }
     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.S) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Down)) {
         //下移
@@ -147,7 +146,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
                     this.vX = 0;
             }
         }
-        this.mDye.setElementPixelPositions(820*4, 820*5, 1024, 2048);
+        this.mDye.setElementPixelPositions(1024*4, 1024*5, 0, 1024);
     }
     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
         //左移
@@ -166,7 +165,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
             if(this.vY < 0.3)
                 this.vY = 0.3;
         }
-        this.mDye.setElementPixelPositions(820, 820*2, 1024, 2048);
+        this.mDye.setElementPixelPositions(1024, 1024*2, 0, 1024);
     }
     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
         //右移
@@ -185,7 +184,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
             if(this.vY < 0.3)
                 this.vY = 0.3;
         }
-        this.mDye.setElementPixelPositions(820*2, 820*3, 1024, 2048);
+        this.mDye.setElementPixelPositions(1024*2, 1024*3, 0, 1024);
     }else{
         if(this.vY < 0.3){
             this.vY += 1;
@@ -206,7 +205,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
             if(this.vX < 0)
                 this.vX = 0;
         }
-        this.mDye.setElementPixelPositions(0, 820, 1024, 2048);
+        this.mDye.setElementPixelPositions(0, 1024, 0, 1024);
         // 什么按键都没有消失，则向中心点靠近
         var x = centerX - this.getXform().getXPos();
         var y = centerY - this.getXform().getYPos();

@@ -19,8 +19,8 @@ function Competitor(spriteTexture) {
     this.mDye = new SpriteRenderable(spriteTexture);
     this.mDye.setColor([1, 1, 1, 0]);
     this.mDye.getXform().setPosition(this.posX, this.posY);
-    this.mDye.getXform().setSize(this.radius, 0.8*this.radius);
-    this.mDye.setElementPixelPositions(2750, 2750 + 1200, 0, 1024);
+    this.mDye.getXform().setSize(this.radius, this.radius);
+    this.mDye.setElementPixelPositions(0, 1500, 0, 1024);
     GameObject.call(this, this.mDye);
     const r = new RigidCircle(this.getXform(), 0.25*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
     this.setRigidBody(r);
