@@ -105,6 +105,20 @@ GameObject.prototype.update = function () {
 GameObject.prototype.setSpeed = function (s) { this.mSpeed = s; };
 GameObject.prototype.getSpeed = function () { return this.mSpeed; };
 
+//
+// GameObject.prototype.discreteDirection = function (p) {
+//     // Step A: determine if reach the destination position p
+//     var dir = [];
+//     vec2.sub(dir, p, this.getXform().getPosition());
+//     var len = vec2.length(dir);
+//     if (len < Number.MIN_VALUE) {
+//         return; // we are there.
+//     }
+//
+// };
+
+
+
 GameObject.prototype.rotateObjPointTo = function (p, rate) {
     // Step A: determine if reach the destination position p
     var dir = [];
@@ -139,7 +153,7 @@ GameObject.prototype.rotateObjPointTo = function (p, rate) {
     var r3d = [];
     vec3.cross(r3d, f3d, dir3d);
 
-    var rad = Math.acos(cosTheta);  // radian to roate
+    var rad = Math.acos(cosTheta);  // radian to rotate
     if (r3d[2] < 0) {
         rad = -rad;
     }
@@ -149,6 +163,10 @@ GameObject.prototype.rotateObjPointTo = function (p, rate) {
     vec2.rotate(this.getCurrentFrontDir(), this.getCurrentFrontDir(), rad);
     this.getXform().incRotationByRad(rad);
 };
+
+
+
+
 
 GameObject.prototype.compUpdate = function () {
     var pos = this.getXform().getPosition();

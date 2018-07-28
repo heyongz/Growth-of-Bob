@@ -407,7 +407,7 @@ Level1.prototype.dectectMinHero = function(posX, posY, radius){
             return this.calculateMinFood(posX, posY);
         }catch(err){
             console.log(err);
-            return this.calculateMinFood(0, 0);
+            return [0,0];
         }
     }else{
         var hero = this.mAllHeros.getObjectAt(res);
