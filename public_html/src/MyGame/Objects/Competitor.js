@@ -19,7 +19,7 @@ function Competitor(spriteTexture) {
     this.mDye = new SpriteRenderable(spriteTexture);
     this.mDye.setColor([1, 1, 1, 0]);
     this.mDye.getXform().setPosition(this.posX, this.posY);
-    this.mDye.getXform().setSize(this.radius, this.radius);
+    this.mDye.getXform().setSize(1.5 * this.radius, this.radius);
     this.mDye.setElementPixelPositions(0, 1500, 0, 1024);
     GameObject.call(this, this.mDye);
     const r = new RigidCircle(this.getXform(), 0.25*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
@@ -33,7 +33,7 @@ Competitor.prototype.update = function () {
     this.posX = this.mDye.getXform().getXPos();
     this.posY = this.mDye.getXform().getYPos();
     this.radius = 2*Math.sqrt(this.weight);
-    this.mDye.getXform().setSize(this.radius, 0.8*this.radius);
+    this.mDye.getXform().setSize(1.5* this.radius, this.radius);
     var r = new RigidCircle(this.getXform(), 0.25*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
     this.setRigidBody(r);
     this.checkBound();      //检测Competitor边界

@@ -16,7 +16,7 @@ function Background(spriteTexture) {
     this.mDye.setColor([1, 1, 1, 0]);
     this.mDye.getXform().setPosition(0, 0);
     this.mDye.getXform().setSize(680, 680);
-    this.mDye.setElementPixelPositions(0, 8192, 0, 8192);
+    this.mDye.setElementPixelPositions(0, 2048, 0, 2048);
     GameObject.call(this, this.mDye);
 }
 gEngine.Core.inheritPrototype(Background, GameObject);
