@@ -138,7 +138,8 @@ Level1.prototype.draw = function () {
     this.mAllComps.draw(this.mMinimap);
     this.mAllHeros.draw(this.mMinimap);
     this.mAllFood.draw(this.mMinimap);
-    this.mAllSpitBall.draw(this.mMinimap);};
+    this.mAllSpitBall.draw(this.mMinimap);
+};
 
 
 Level1.prototype.cameraUpdate = function () {
@@ -214,7 +215,7 @@ Level1.prototype.heroUpdate = function () {
  if(gEngine.Input.isKeyClicked(gEngine.Input.keys.C)){
      for(var i = 0; i < this.mAllHeros.size(); i++){
          var obj = this.mAllHeros.getObjectAt(i);
-         if(obj.getWeight() > 30){
+         if(obj.getWeight() > 15){
              var Vx = obj.getVX();
              var Vy = obj.getVY();
              var mHeroPosX = obj.getXform().getXPos();
@@ -222,7 +223,7 @@ Level1.prototype.heroUpdate = function () {
              var mHeroSize = obj.getXform().getWidth();
              var DirectionX = Vx/Math.sqrt(Vx*Vx+Vy*Vy);
              var DirectionY = Vy/Math.sqrt(Vx*Vx+Vy*Vy);
-             mSpitball = new Spitball(this.kBaby, (mHeroPosX + DirectionX * (mHeroSize/2 + 2)), (mHeroPosY + DirectionY * (mHeroSize/2 + 2)), DirectionX, DirectionY);
+             mSpitball = new Spitball(this.kFood, (mHeroPosX + DirectionX * (mHeroSize/2 + 2)), (mHeroPosY + DirectionY * (mHeroSize/2 + 2)), DirectionX, DirectionY);
              obj.incWeight(-mSpitball.getWeight());
              this.mAllSpitBall.addToSet(mSpitball);
          }

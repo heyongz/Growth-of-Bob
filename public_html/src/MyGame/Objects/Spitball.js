@@ -12,7 +12,8 @@ function Spitball(texture, posX, posY, vX, vY) {
     this.mSpitball.getXform().incRotationByDegree(Math.random() * 360);
     this.mSpitball.getXform().setPosition(posX, posY);
     this.mSpitball.getXform().setSize(this.radius, this.radius);
-    this.mSpitball.setElementPixelPositions(0, 1024, 0, 1024);
+    var num = Math.floor(Math.random()*3.1);
+    this.mSpitball.setElementPixelPositions(num*256, (num+1)*256, 0, 256);
     GameObject.call(this, this.mSpitball);
 
     var r = new RigidCircle(this.getXform(), 0.25*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
