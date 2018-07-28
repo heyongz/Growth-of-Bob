@@ -1,12 +1,14 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 function Food(texture) {
-    this.mFood = new TextureRenderable(texture);
+    this.mFood = new SpriteRenderable(texture);
     this.mFood.setColor([1, 1, 1, 0]);
     this.mFood.getXform().incRotationByDegree(Math.random() * 360);
     this.mFood.getXform().setPosition(Math.random() * 512 - 256, Math.random() * 512 - 256);
     var weight = Math.ceil(Math.random()*3) + 2;
     this.mFood.getXform().setSize(weight, weight);
+    var num = Math.floor(Math.random()*3.1);
+    this.mFood.setElementPixelPositions(256*num, 256*(num+1), 0, 256);
     GameObject.call(this, this.mFood);
 
     var r = new RigidCircle(this.getXform(), weight/2);

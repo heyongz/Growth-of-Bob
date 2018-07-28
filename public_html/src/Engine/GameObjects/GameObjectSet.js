@@ -80,6 +80,11 @@ GameObjectSet.prototype.update = function (centerX, centerY) {
     }
 };
 
+GameObjectSet.prototype.updateSpitball = function () {
+    for (let i = 0; i < this.mSet.length; i++) {
+        this.mSet[i].update();
+    }
+};
 /**
  * Draw function called by GameLoop calls all GameObject's in GameObjectSet
  * @param {type} aCamera

@@ -12,7 +12,7 @@ function Level1() {
 
     this.mAllComps = null;
     this.mAllHeros = null;
-
+    this.mAllSpitBall = null;
     this.mAllFood = null;
 
     this.centerX = null;
@@ -116,6 +116,7 @@ Level1.prototype.initialize = function () {
         this.mAllFood.addToSet(new Food(this.kFood));
     }
 
+    this.mAllSpitBall = new GameObjectSet();
     this.mBackground = new Background(this.kBackground);
     gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
 };
@@ -130,14 +131,14 @@ Level1.prototype.draw = function () {
     this.mAllComps.draw(this.mCamera);
     this.mAllHeros.draw(this.mCamera,);
     this.mAllFood.draw(this.mCamera);
-
+    this.mAllSpitBall.draw(this.mCamera);
     //画 mMinimap
     this.mMinimap.setupViewProjection();
     this.mBackground.draw(this.mMinimap);
     this.mAllComps.draw(this.mMinimap);
     this.mAllHeros.draw(this.mMinimap);
     this.mAllFood.draw(this.mMinimap);
-};
+    this.mAllSpitBall.draw(this.mMinimap);};
 
 
 Level1.prototype.cameraUpdate = function () {
@@ -208,7 +209,39 @@ Level1.prototype.heroUpdate = function () {
             }
         }
     }
-
+ //吐球
+ var mSpitball = null;
+ if(gEngine.Input.isKeyClicked(gEngine.Input.keys.C)){
+     for(var i = 0; i < this.mAllHeros.size(); i++){
+         var obj = this.mAllHeros.getObjectAt(i);
+         if(obj.getWeight() > 30){
+             var Vx = obj.getVX();
+             var Vy = obj.getVY();
+             var mHeroPosX = obj.getXform().getXPos();
+             var mHeroPosY = obj.getXform().getYPos();
+             var mHeroSize = obj.getXform().getWidth();
+             var DirectionX = Vx/Math.sqrt(Vx*Vx+Vy*Vy);
+             var DirectionY = Vy/Math.sqrt(Vx*Vx+Vy*Vy);
+             mSpitball = new Spitball(this.kBaby, (mHeroPosX + DirectionX * (mHeroSize/2 + 2)), (mHeroPosY + DirectionY * (mHeroSize/2 + 2)), DirectionX, DirectionY);
+             obj.incWeight(-mSpitball.getWeight());
+             this.mAllSpitBall.addToSet(mSpitball);
+         }
+     }
+ }
+ 
+ //吃小球
+ var spitball;
+ for (let i = 0; i < this.mAllHeros.size(); i++) {
+     var hero = this.mAllHeros.getObjectAt(i);
+     for (let j = 0; j < this.mAllSpitBall.size(); j++) {
+         spitball = this.mAllSpitBall.getObjectAt(j);
+         if (Math.sqrt(Math.pow(hero.getXform().getXPos()-spitball.getXform().getXPos(),2)+Math.pow(hero.getXform().getYPos()-spitball.getXform().getYPos(),2)) < hero.getHeroRadius()+spitball.getSpitballRadius()) {
+             gEngine.AudioClips.playACue(this.kCue); //播放cue声音
+             hero.incWeight(spitball.getWeight());
+             this.mAllSpitBall.removeFromSet(spitball);
+         }
+     }
+ }
     //分裂
     var mNewHero = null;
     var mHeroSetLengthNow = this.mAllHeros.size();
@@ -296,10 +329,10 @@ Level1.prototype.foodUpdate = function () {
         var hero = this.mAllHeros.getObjectAt(i);
         for (let j = 0; j < this.mAllFood.size(); j++) {
             food = this.mAllFood.getObjectAt(j);
-            if (Math.sqrt(Math.pow(hero.getXform().getXPos()-food.getXform().getXPos(),2)+Math.pow(hero.getXform().getYPos()-food.getXform().getYPos(),2)) < hero.getHeroRadius()+food.getFoodRadius()) {
+            if (Math.sqrt(Math.pow(hero.getXform().getXPos() - food.getXform().getXPos(), 2) + Math.pow(hero.getXform().getYPos() - food.getXform().getYPos(), 2)) < hero.getHeroRadius() + food.getFoodRadius()) {
                 gEngine.AudioClips.playACue(this.kCue); //播放cue声音
                 hero.incWeight(food.getWeight());
-                if(hero.getWeight() >= this.weight && this.mAllComps.size() ===0){
+                if (hero.getWeight() >= this.weight && this.mAllComps.size() === 0) {
                     this.mRestart = true;
                     this.tag = 2;
                     gEngine.GameLoop.stop();
@@ -314,15 +347,26 @@ Level1.prototype.foodUpdate = function () {
         var comp = this.mAllComps.getObjectAt(i);
         for (let j = 0; j < this.mAllFood.size(); j++) {
             food = this.mAllFood.getObjectAt(j);
-            if (Math.sqrt(Math.pow(comp.getXform().getXPos()-food.getXform().getXPos(),2)+Math.pow(comp.getXform().getYPos()-food.getXform().getYPos(),2)) < comp.getCompetitorRadius()+food.getFoodRadius()) {
+            if (Math.sqrt(Math.pow(comp.getXform().getXPos() - food.getXform().getXPos(), 2) + Math.pow(comp.getXform().getYPos() - food.getXform().getYPos(), 2)) < comp.getCompetitorRadius() + food.getFoodRadius()) {
                 comp.incWeight(food.getWeight());
                 food.setPos();
             }
         }
         comp.update();
     }
+    //敌人吃小球
+    for (let i = 0; i < this.mAllComps.size(); i++) {
+        var comp = this.mAllComps.getObjectAt(i);
+        for (let j = 0; j < this.mAllSpitBall.size(); j++) {
+            var spitball = this.mAllSpitBall.getObjectAt(j);
+            if (Math.sqrt(Math.pow(comp.getXform().getXPos() - spitball.getXform().getXPos(), 2) + Math.pow(comp.getXform().getYPos() - spitball.getXform().getYPos(), 2)) < comp.getCompetitorRadius() + spitball.getSpitballRadius()) {
+                gEngine.AudioClips.playACue(this.kCue); //播放cue声音
+                comp.incWeight(spitball.getWeight());
+                this.mAllSpitBall.removeFromSet(spitball);
+            }
+        }
+    }
 };
-
 
 Level1.prototype.calculateMinFood = function(posX, posY){
     var px, py, res=0;
@@ -433,5 +477,6 @@ Level1.prototype.update = function () {
     this.detectCollision(); //判断hero、comp是否碰撞
 
     this.mAllHeros.update(this.centerX, this.centerY);  //hero 的键盘响应以及自动聚合
+    this.mAllComps.updateSpitball();
+    this.mAllSpitBall.updateSpitball();
 };
-

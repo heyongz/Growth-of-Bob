@@ -55,6 +55,11 @@ Hero.prototype.keyControl = function (centerX, centerY) {
                 if(this.vX > -speed*100/Math.sqrt(2))
                     this.vX = -speed*100/Math.sqrt(2);
             }
+            if(this.vY > speed*100/Math.sqrt(2)){
+                this.vY -= 1;
+                if(this.vY < speed*100/Math.sqrt(2))
+                    this.vY = speed*100/Math.sqrt(2);
+            }  
             if(this.vY < 0.3)
                 this.vY += 1;
             if(this.vY < speed*100/Math.sqrt(2))
@@ -68,6 +73,11 @@ Hero.prototype.keyControl = function (centerX, centerY) {
                 this.vX -= 1;
                 if(this.vX < speed*100/Math.sqrt(2))
                     this.vX = speed*100/Math.sqrt(2);
+            }
+            if(this.vY > speed*100/Math.sqrt(2)){
+                this.vY -= 1;
+                if(this.vY < speed*100/Math.sqrt(2))
+                    this.vY = speed*100/Math.sqrt(2);
             }
             if(this.vY < 0.3)
                 this.vY += 1;
@@ -106,6 +116,11 @@ Hero.prototype.keyControl = function (centerX, centerY) {
                 if(Math.abs(this.vX) > -speed*100/Math.sqrt(2))
                     this.vX = -speed*100/Math.sqrt(2);
             }
+            if(this.vY < -speed*100/Math.sqrt(2)){
+                this.vY += 1;
+                if(this.vY > -speed*100/Math.sqrt(2))
+                    this.vY = -speed*100/Math.sqrt(2);
+            }  
             if(this.vY > 0.3)
                 this.vY -= 1;
             if(this.vY > -speed*100/Math.sqrt(2))
@@ -120,6 +135,11 @@ Hero.prototype.keyControl = function (centerX, centerY) {
                 if(this.vX < speed*100/Math.sqrt(2))
                     this.vX = speed*100/Math.sqrt(2);
             }
+            if(this.vY < -speed*100/Math.sqrt(2)){
+                this.vY += 1;
+                if(this.vY > -speed*100/Math.sqrt(2))
+                    this.vY = -speed*100/Math.sqrt(2);
+            }  
             if(this.vY > 0.3)
                 this.vY -= 1;
             if(this.vY > -speed*100/Math.sqrt(2))
