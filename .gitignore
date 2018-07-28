@@ -6,5 +6,6 @@
 *.zip
 *.rar
 
+/.vs
 /.idea
 /nbproject
