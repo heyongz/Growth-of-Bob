@@ -1,0 +1,10 @@
+*.md
+*.pdf
+*.ppt
+*.doc
+*.docx
+*.zip
+*.rar
+
+/.idea
+/nbproject
