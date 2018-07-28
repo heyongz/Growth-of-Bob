@@ -403,7 +403,12 @@ Level1.prototype.dectectMinHero = function(posX, posY, radius){
 
     // 警戒范围内无hero
     if(res === -1){
-        return this.calculateMinFood(posX, posY);
+        try{
+            return this.calculateMinFood(posX, posY);
+        }catch(err){
+            console.log(err);
+            return this.calculateMinFood(0, 0);
+        }
     }else{
         var hero = this.mAllHeros.getObjectAt(res);
         if(hero.getHeroRadius() >= radius){
