@@ -52,17 +52,17 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
             //左上
             if(this.vX < -speed*100/Math.sqrt(2)){
-                this.vX += 1;
+                this.vX += 1/Math.sqrt(2);
                 if(this.vX > -speed*100/Math.sqrt(2))
                     this.vX = -speed*100/Math.sqrt(2);
             }
             if(this.vY > speed*100/Math.sqrt(2)){
-                this.vY -= 1;
+                this.vY -= 1/Math.sqrt(2);
                 if(this.vY < speed*100/Math.sqrt(2))
                     this.vY = speed*100/Math.sqrt(2);
             }  
             if(this.vY < 0.3)
-                this.vY += 1;
+                this.vY += 1/Math.sqrt(2);
             if(this.vY < speed*100/Math.sqrt(2))
                 this.vY += 0.5/Math.sqrt(2);
             if(this.vX > -speed*100/Math.sqrt(2))
@@ -71,17 +71,17 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
             //右上
             if(this.vX > speed*100/Math.sqrt(2)){
-                this.vX -= 1;
+                this.vX -= 1/Math.sqrt(2);
                 if(this.vX < speed*100/Math.sqrt(2))
                     this.vX = speed*100/Math.sqrt(2);
             }
             if(this.vY > speed*100/Math.sqrt(2)){
-                this.vY -= 1;
+                this.vY -= 1/Math.sqrt(2);
                 if(this.vY < speed*100/Math.sqrt(2))
                     this.vY = speed*100/Math.sqrt(2);
             }
             if(this.vY < 0.3)
-                this.vY += 1;
+                this.vY += 1/Math.sqrt(2);
             if(this.vY < speed*100/Math.sqrt(2))
                 this.vY += 0.5/Math.sqrt(2);
             if(this.vX < speed*100/Math.sqrt(2))
@@ -92,7 +92,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
             if(this.vY < 0.3)
                 this.vY += 1;
             if(this.vY > speed*100)
-                this.vY -= 2;
+                this.vY -= 1;
             if(this.vY < speed*100)
                 this.vY += 0.5;
             if(this.vX < 0){
@@ -113,17 +113,17 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
             //左下
             if(this.vX < -speed*100/Math.sqrt(2)){
-                this.vX += 1;
+                this.vX += 1/Math.sqrt(2);
                 if(Math.abs(this.vX) > -speed*100/Math.sqrt(2))
                     this.vX = -speed*100/Math.sqrt(2);
             }
             if(this.vY < -speed*100/Math.sqrt(2)){
-                this.vY += 1;
+                this.vY += 1/Math.sqrt(2);
                 if(this.vY > -speed*100/Math.sqrt(2))
                     this.vY = -speed*100/Math.sqrt(2);
             }  
             if(this.vY > 0.3)
-                this.vY -= 1;
+            this.vY -= 1/Math.sqrt(2);
             if(this.vY > -speed*100/Math.sqrt(2))
                 this.vY -= 0.5/Math.sqrt(2);
             if(this.vX > -speed*100/Math.sqrt(2))
@@ -132,17 +132,17 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
             //右下
             if(this.vX > speed*100/Math.sqrt(2)){
-                this.vX -= 1;
+                this.vX -= 1/Math.sqrt(2);
                 if(this.vX < speed*100/Math.sqrt(2))
                     this.vX = speed*100/Math.sqrt(2);
             }
             if(this.vY < -speed*100/Math.sqrt(2)){
-                this.vY += 1;
+                this.vY += 1/Math.sqrt(2);
                 if(this.vY > -speed*100/Math.sqrt(2))
                     this.vY = -speed*100/Math.sqrt(2);
             }  
             if(this.vY > 0.3)
-                this.vY -= 1;
+                this.vY -= 1/Math.sqrt(2);
             if(this.vY > -speed*100/Math.sqrt(2))
                 this.vY -= 0.5/Math.sqrt(2);
             if(this.vX < speed*100/Math.sqrt(2))
@@ -153,7 +153,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
             if(this.vY > 0.3)
                 this.vY -= 1;
             if(this.vY < -speed*100)
-                this.vY += 2;
+                this.vY += 1;
             if(this.vY > -speed*100)
                 this.vY -= 0.5;
             if(this.vX < 0){
@@ -174,7 +174,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         if(this.vX > 0)
             this.vX -= 1;
         if(this.vX < -speed*100)
-            this.vX += 2;
+            this.vX += 1;
         if(this.vX > -speed*100)
             this.vX -= 0.5;
         if(this.vY < 0.3){
@@ -193,7 +193,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         if(this.vX < 0)
             this.vX += 1;
         if(this.vX > speed*100)
-            this.vX -= 2;
+            this.vX -= 1;
         if(this.vX < speed*100)
             this.vX += 0.5;
         if(this.vY < 0.3){
@@ -235,8 +235,8 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         y = y / Math.sqrt(x*x + y*y);
 
         if(!isNaN(x)&& !isNaN(y)){
-            xform.incXPosBy(0.6*speed * x);
-            xform.incYPosBy(0.6*speed * y);
+            this.vX = 5*speed * x;
+            this.vY = 5*speed * y;
         }
     }
     this.radius = Math.sqrt(this.weight);
