@@ -70,6 +70,9 @@ Competitor.prototype.getWeight = function() {
     return this.weight;
 };
 
+Competitor.prototype.setWeight = function(weight) {
+    this.weight = weight;
+};
 
 Competitor.prototype.getCompetitorRadius = function() {
     return this.radius/2;

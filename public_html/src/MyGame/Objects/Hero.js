@@ -228,6 +228,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         }
         this.mDye.setElementPixelPositions(0, 1024, 0, 1024);
         // 什么按键都没有消失，则向中心点靠近
+        if((this.vX === 0) && (this.vY === 0.3)){
         var x = centerX - this.getXform().getXPos();
         var y = centerY - this.getXform().getYPos();
 
@@ -239,6 +240,7 @@ Hero.prototype.keyControl = function (centerX, centerY) {
             this.vY = 5*speed * y;
         }
     }
+}
     this.radius = Math.sqrt(this.weight);
     this.mDye.getXform().setSize(this.radius, this.radius);
 

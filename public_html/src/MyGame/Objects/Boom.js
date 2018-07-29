@@ -30,4 +30,7 @@ Boom.prototype.getWeight = function(){
     return this.weight;
 };
 
+Boom.prototype.setWeight = function(weight) {
+    this.weight = weight;
+};
 

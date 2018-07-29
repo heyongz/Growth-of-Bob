@@ -43,7 +43,7 @@ Begin.prototype.unloadScene = function () {
     gEngine.AudioClips.unloadAudio(this.kCue);
 
     if (this.mRestart === true){
-        gEngine.Core.startScene(new Level1());
+        gEngine.Core.startScene(new Level0());
     }else{
         gEngine.Core.startScene(new End(this.kHelp, 0));
     }
