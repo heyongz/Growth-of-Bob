@@ -71,6 +71,9 @@ Level1.prototype.unloadScene = function () {
             case 2:
                 nextLevel = new Level2();
                 break;
+            case 3:
+                nextLevel = new Level3();
+                break;
             case 4:
                 nextLevel = new End("assets/pictures/win.png", 0);
                 break;

@@ -13,7 +13,7 @@ function Hero(spriteTexture, weight, posX, posY) {
     this.mDye.setElementPixelPositions(0, 1024, 0, 1024);
     GameObject.call(this, this.mDye);
 
-    var r = new RigidCircle(this.getXform(), 0.25*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
+    var r = new RigidCircle(this.getXform(), 0.2*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
     this.setRigidBody(r);
 }
 gEngine.Core.inheritPrototype(Hero, GameObject);
@@ -23,7 +23,7 @@ Hero.prototype.update = function (centerX, centerY) {
     if(this.outControl === false)
         this.keyControl(centerX, centerY);
     this.radius = 2 * Math.sqrt(this.weight);
-    const r = new RigidCircle(this.getXform(), 0.25*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
+    const r = new RigidCircle(this.getXform(), 0.2*Math.sqrt(this.radius*this.radius + this.radius*this.radius));
     this.setRigidBody(r);
     this.getRigidBody().setVelocity(this.vX,this.vY);//    this.keyControl(centerX, centerY);
     this.mDye.getXform().setSize(this.radius, this.radius);

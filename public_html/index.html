@@ -111,7 +111,7 @@
     </head>
 
     <body onload="
-       var begin = new Level3();
+       var begin = new Begin();
         gEngine.Core.initializeEngineCore('GLCanvas', begin);
      ">
         <div id="LoadingIconParent" style="width: 800px; height:600px;margin:0 auto;">
@@ -122,5 +122,15 @@
             </canvas>
             <script type="text/javascript"> gEngine.LoadingIconConfig.setup(); </script>
         </div>
+
+        <div class="text" style=" text-align:center;">
+            <b>Behavior Controls:</b>
+            <ul>
+                <b>WASD</b>: Move the ball
+                <b>SPACE</b>: Split the ball
+                <b>C</b>: Spit the ball
+            </ul>
+        </div>
+
     </body>
 </html>

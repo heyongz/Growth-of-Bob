@@ -71,6 +71,9 @@ Level2.prototype.unloadScene = function () {
             case 2:
                 nextLevel = new Level2();
                 break;
+            case 3:
+                nextLevel = new Level3();
+                break;
             case 4:
                 nextLevel = new End("assets/pictures/win.png", 0);
                 break;
@@ -377,7 +380,7 @@ Level2.prototype.foodUpdate = function () {
                 food.setPos();
                 if(hero.getWeight() >= this.weight && this.mAllComps.size()===0){
                     this.mRestart = true;
-                    this.tag = 4;
+                    this.tag = 3;
                     gEngine.AudioClips.stopBackgroundAudio();
                     gEngine.GameLoop.stop();
                 }
@@ -547,7 +550,7 @@ Level2.prototype.detectCollision = function(){
                     j--;    //从set中删除后在下一轮循环下标会加1，因此提前减1
                     if(hero.getWeight() >= this.weight && this.mAllComps.size() === 0){
                         this.mRestart = true;
-                        this.tag = 4;
+                        this.tag = 3;
                         gEngine.AudioClips.stopBackgroundAudio();
                         gEngine.GameLoop.stop();
                     }

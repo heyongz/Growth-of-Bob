@@ -79,7 +79,7 @@ Level3.prototype.unloadScene = function () {
                 nextLevel = new End("assets/pictures/win.png", 0);
                 break;
             case 5:
-                nextLevel = new End("assets/pictures/fail.png", 1);
+                nextLevel = new End("assets/pictures/fail.png", 3);
                 break;
         }
         gEngine.Core.startScene(nextLevel);
@@ -594,7 +594,7 @@ Level3.prototype.detectCollision = function(){
                     j--;    //从set中删除后在下一轮循环下标会加1，因此提前减1
                     if(this.mAlice.getWeight() >= this.weight && this.mAllComps.size() === 0){
                         this.mRestart = true;
-                        this.tag = 2;
+                        this.tag = 4;
                         gEngine.AudioClips.stopBackgroundAudio();
                         gEngine.GameLoop.stop();
                     }
@@ -625,7 +625,7 @@ Level3.prototype.detectCollision = function(){
 
     if(this.mAliceWeight >= this.weight){
         this.mRestart = true;
-        this.tag = 2;
+        this.tag = 4;
         gEngine.AudioClips.stopBackgroundAudio();
         gEngine.GameLoop.stop();
     }
