@@ -410,14 +410,25 @@ Level2.prototype.BlackholeUpdate = function(){
         for(let j = 0; j < this.mAllBlackhole.size(); j++){
             var blackhole = this.mAllBlackhole.getObjectAt(j);
             if (hero.getRigidBody().collisionTest(blackhole.getRigidBody(), info)) {
-                if(this.mAllHeros.size() === 1){
-                    hero.getXform().setPosition(Math.random() * 512 - 256, Math.random() * 512 - 256);
-                    hero.setControl(false);
-                    this.outControl = false;
+                var allCollision = false;
+                for(let t = 0; t < this.mAllHeros.size(); t++){
+                    var chero = this.mAllHeros.getObjectAt(t);
+                    if (!(chero.getRigidBody().collisionTest(blackhole.getRigidBody(), info))){
+                        allCollision = false;
+                        break;
+                    }
+                    allCollision = true;
+                }
+                if(allCollision === true){
+                    var transPosX = Math.random() * 430 - 215;
+                    var transPosY = Math.random() * 430 - 215;
+                    for(let t = 0; t < this.mAllHeros.size(); t++){
+                        var chero = this.mAllHeros.getObjectAt(t);
+                        chero.getXform().setPosition(transPosX, transPosY);
+                        chero.setControl(false);
+                    }                    this.outControl = false;
                     break;
                 }
-                if(hero.getControl() === true)
-                    continue;
                 hero.setVX(0);
                 hero.setVY(0.3);
                 hero.setControl(true);
@@ -522,7 +533,7 @@ Level2.prototype.detectCollision = function(){
                     hero.incWeight(comp.getWeight());
                     this.mAllComps.removeFromSet(comp);
                     j--;    //从set中删除后在下一轮循环下标会加1，因此提前减1
-                    if(hero.getWeight() >= this.weight && this.mAllComps.size() === 0){     //TODO
+                    if(hero.getWeight() >= this.weight && this.mAllComps.size() === 0){
                         this.mRestart = true;
                         this.tag = 4;
                         gEngine.AudioClips.stopBackgroundAudio();
