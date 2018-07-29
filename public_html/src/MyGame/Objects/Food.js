@@ -10,9 +10,6 @@ function Food(texture) {
     var num = Math.floor(Math.random()*3.1);
     this.mFood.setElementPixelPositions(256*num, 256*(num+1), 0, 256);
     GameObject.call(this, this.mFood);
-
-    var r = new RigidCircle(this.getXform(), weight/2);
-    this.setRigidBody(r);
 }
 gEngine.Core.inheritPrototype(Food, GameObject);
 
