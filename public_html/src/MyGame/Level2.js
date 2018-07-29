@@ -24,6 +24,7 @@ function Level2() {
 
     this.mCamera = null;
     this.mMinimap = null;
+    this.mMinitxt = null;
 
     this.weight = 100;
 
@@ -101,6 +102,13 @@ Level2.prototype.initialize = function () {
         [this.width - 128, this.height - 128, 128, 128]
     );
     this.mMinimap.setBackgroundColor([0.871, 0.933, 0.984, 1]);
+    //新建minitxt
+    this.mMinitxt = new Camera(
+        vec2.fromValues(0, 0),
+        512,
+        [0, 570, 256, 128]
+    );
+    this.mMinitxt.setBackgroundColor([0.686, 0.827, 0.949, 1]);
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
 
     this.mAllHeros = new GameObjectSet();
@@ -124,6 +132,11 @@ Level2.prototype.initialize = function () {
     
     this.mAllSpitBall = new GameObjectSet();
     gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
+
+    this.mMsg = new FontRenderable(" ");
+    this.mMsg.setColor([0, 0, 0, 0.5]);
+    this.mMsg.getXform().setPosition(-256, -90);
+    this.mMsg.setTextHeight(50);
 };
 
 
@@ -146,6 +159,10 @@ Level2.prototype.draw = function () {
     this.mAllFood.draw(this.mMinimap);
     this.mAllSpitBall.draw(this.mMinimap);
     this.mAllBlackhole.draw(this.mMinimap);
+
+    //txt
+    this.mMinitxt.setupViewProjection();
+    this.mMsg.draw(this.mMinitxt);
 };
 
 
@@ -528,6 +545,19 @@ Level2.prototype.detectCollision = function(){
 };
 
 
+Level2.prototype.txtUpdate = function () {
+    var msg = " ";
+    this.bobweight = 0;
+    for (let i = 0; i < this.mAllHeros.size(); i++) {
+        var hero = this.mAllHeros.getObjectAt(i);
+        this.bobweight += hero.getWeight();
+    }
+
+    msg +="Bob's Weight:" + Math.floor(this.bobweight);
+    this.mMsg.setText(msg);
+};
+
+
 Level2.prototype.update = function () {
     this.cameraUpdate();    //更新摄像机大小、中心位置
     this.mCamera.update();
@@ -542,6 +572,7 @@ Level2.prototype.update = function () {
     this.compUpdate();      //comp 的位置更新
     this.detectCollision(); //判断hero、comp是否碰撞
     this.BlackholeUpdate();
+    this.txtUpdate();       //计算当下Bob重量
     
     this.mAllBlackhole.updateSpitball();
     this.mAllHeros.update(this.centerX, this.centerY);  //hero 的键盘响应以及自动聚合
