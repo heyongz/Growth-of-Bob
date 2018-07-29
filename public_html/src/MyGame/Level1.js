@@ -329,6 +329,7 @@ Level1.prototype.foodUpdate = function () {
                 if (hero.getWeight() >= this.weight && this.mAllComps.size() === 0) {
                     this.mRestart = true;
                     this.tag = 2;
+
                     gEngine.GameLoop.stop();
                 }
                 food.setPos();
@@ -444,6 +445,7 @@ Level1.prototype.detectCollision = function(){
                     if(hero.getWeight() >= this.weight){
                         this.mRestart = true;
                         this.tag = 2;
+                        gEngine.AudioClips.stopBackgroundAudio();
                         gEngine.GameLoop.stop();
                     }
                 }else if(hero.radius < comp.radius){
@@ -454,6 +456,7 @@ Level1.prototype.detectCollision = function(){
                 if(this.mAllHeros.size() === 0){
                     this.mRestart = true;
                     this.tag = 5;
+                    gEngine.AudioClips.stopBackgroundAudio();
                     gEngine.GameLoop.stop();
                 }
             }

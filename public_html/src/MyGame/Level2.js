@@ -351,6 +351,7 @@ Level2.prototype.foodUpdate = function () {
                 if(hero.getWeight() >= this.weight && this.mAllComps.size()===0){
                     this.mRestart = true;
                     this.tag = 4;
+                    gEngine.AudioClips.stopBackgroundAudio();
                     gEngine.GameLoop.stop();
                 }
             }
@@ -507,6 +508,7 @@ Level2.prototype.detectCollision = function(){
                     if(hero.getWeight() >= this.weight && this.mAllComps.size() === 0){     //TODO
                         this.mRestart = true;
                         this.tag = 4;
+                        gEngine.AudioClips.stopBackgroundAudio();
                         gEngine.GameLoop.stop();
                     }
                 }else if(hero.radius < comp.radius){
@@ -517,6 +519,7 @@ Level2.prototype.detectCollision = function(){
                 if(this.mAllHeros.size() === 0){
                     this.mRestart = true;
                     this.tag = 5;
+                    gEngine.AudioClips.stopBackgroundAudio();
                     gEngine.GameLoop.stop();
                 }
             }
