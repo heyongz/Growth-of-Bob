@@ -28,6 +28,10 @@ function Competitor(spriteTexture) {
 }
 gEngine.Core.inheritPrototype(Competitor, GameObject);
 
+Competitor.prototype.changePicture = function(dir){
+    this.mDye.setElementPixelPositions(dir * 1500, (dir+1) * 1500, 0, 1024);
+};
+
 Competitor.prototype.update = function () {
     this.setSpeed(this.speed);
     this.posX = this.mDye.getXform().getXPos();

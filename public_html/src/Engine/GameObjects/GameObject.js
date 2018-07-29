@@ -62,7 +62,6 @@ GameObject.prototype.isVisible = function () { return this.mVisible; };
 GameObject.prototype.setCurrentFrontDir = function (f) { vec2.normalize(this.mCurrentFrontDir, f); };
 
 
-//TODO: 解决人物旋转bug
 /**
  * Return the front vector of the GameObject
  * @returns {vec2} GameObject's front vector
@@ -105,17 +104,57 @@ GameObject.prototype.update = function () {
 GameObject.prototype.setSpeed = function (s) { this.mSpeed = s; };
 GameObject.prototype.getSpeed = function () { return this.mSpeed; };
 
-//
-// GameObject.prototype.discreteDirection = function (p) {
-//     // Step A: determine if reach the destination position p
-//     var dir = [];
-//     vec2.sub(dir, p, this.getXform().getPosition());
-//     var len = vec2.length(dir);
-//     if (len < Number.MIN_VALUE) {
-//         return; // we are there.
-//     }
-//
-// };
+
+GameObject.prototype.discreteDirection = function (p) {
+    // Step A: determine if reach the destination position p
+    var dir = [];
+    vec2.sub(dir, p, this.getXform().getPosition());
+    var len = vec2.length(dir);
+    if (len < Number.MIN_VALUE) {
+        return 0; // we are there.
+    }
+    this.setCurrentFrontDir(dir);
+
+    var px = p[0] - this.getXform().getPosition()[0];
+    var py = p[1] - this.getXform().getPosition()[1];
+
+
+    //左右上下
+    if(px <=0 && py <=0){
+        if(-px >= -py){
+            //左
+            return 1;
+        }else{
+            //下
+            return 4;
+        }
+    }else if(px <=0 && py >= 0){
+        if(-px >= py){
+            //左
+            return 1;
+        }else{
+            return 3;
+        }
+    }else if(px >= 0 && py >=0){
+        if(px >= py){
+            //右
+            return 2;
+        }else{
+            //上
+            return 3;
+        }
+    }else{
+        if(px >= -py){
+            //右
+            return 2;
+        }else{
+            //左
+            return 4;
+        }
+    }
+    // 不动
+    return 0;
+};
 
 
 
@@ -166,12 +205,11 @@ GameObject.prototype.rotateObjPointTo = function (p, rate) {
 
 
 
-
-
 GameObject.prototype.compUpdate = function () {
     var pos = this.getXform().getPosition();
     vec2.scaleAndAdd(pos, pos, this.getCurrentFrontDir(), this.getSpeed());
 };
+
 
 GameObject.prototype.draw = function (aCamera) {
     if (this.isVisible()) {

@@ -429,7 +429,8 @@ Level1.prototype.compUpdate = function () {
         var posY = this.mAllComps.getObjectAt(i).getXform().getYPos();
         var radius = this.mAllComps.getObjectAt(i).getCompetitorRadius();
         var pos = this.dectectMinHero(posX, posY,radius);
-        this.mAllComps.getObjectAt(i).rotateObjPointTo(pos, rate);
+        var dir = this.mAllComps.getObjectAt(i).discreteDirection(pos);
+        this.mAllComps.getObjectAt(i).changePicture(dir);
         GameObject.prototype.compUpdate.call(this.mAllComps.getObjectAt(i));
     }
 };
