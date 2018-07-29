@@ -88,6 +88,8 @@ Level2.prototype.initialize = function () {
     this.height = 600;
     this.centerX = 0;
     this.centerY = 0;
+    this.mTime = 180;
+    this.mClock = new Clock(this.mTime);
 
     //新建摄像机
     this.mCamera = new Camera(
@@ -108,7 +110,7 @@ Level2.prototype.initialize = function () {
     this.mMinitxt = new Camera(
         vec2.fromValues(0, 0),
         512,
-        [0, 570, 256, 128]
+        [-80, 540, 256, 128]
     );
     this.mMinitxt.setBackgroundColor([0.686, 0.827, 0.949, 1]);
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
@@ -137,8 +139,13 @@ Level2.prototype.initialize = function () {
 
     this.mMsg = new FontRenderable(" ");
     this.mMsg.setColor([0, 0, 0, 0.5]);
-    this.mMsg.getXform().setPosition(-256, -90);
+    this.mMsg.getXform().setPosition(-45, -30);
     this.mMsg.setTextHeight(50);
+
+    this.mMsgTime = new FontRenderable(" ");
+    this.mMsgTime.setColor([0, 0, 0, 0.5]);
+    this.mMsgTime.getXform().setPosition(-45, -80);
+    this.mMsgTime.setTextHeight(50);
 };
 
 
@@ -165,6 +172,7 @@ Level2.prototype.draw = function () {
     //txt
     this.mMinitxt.setupViewProjection();
     this.mMsg.draw(this.mMinitxt);
+    this.mMsgTime.draw(this.mMinitxt);;
 };
 
 
@@ -559,27 +567,40 @@ Level2.prototype.detectCollision = function(){
 
 
 Level2.prototype.txtUpdate = function () {
-    var msg = " ";
-    this.bobweight = 0;
+    this.mBobWeight = 0;
     for (let i = 0; i < this.mAllHeros.size(); i++) {
         var hero = this.mAllHeros.getObjectAt(i);
-        this.bobweight += hero.getWeight();
+        this.mBobWeight += hero.getWeight();
     }
-
-    msg +="Bob's Weight:" + Math.floor(this.bobweight);
+    var msg ="Weight:" + Math.floor(this.mBobWeight);
     this.mMsg.setText(msg);
 };
 
+Level2.prototype.clockUpdate = function(){
+    this.mClock.update();
+    this.mTime = this.mClock.getTime(); //返回剩余的时间
+    if(this.mTime === 0){
+        this.mRestart = true;
+        this.tag = 5;
+        gEngine.AudioClips.stopBackgroundAudio();
+        gEngine.GameLoop.stop();
+    }
+
+    var msg ="Time:" + this.mTime + "s";
+    this.mMsgTime.setText(msg);
+};
 
 Level2.prototype.update = function () {
     this.cameraUpdate();    //更新摄像机大小、中心位置
     this.mCamera.update();
     this.mMinimap.update();
+    this.mMinitxt.update();
 
     gEngine.Physics.processCollision(this.mAllHeros, this.mCollisionInfos);
     gEngine.Physics.processCollision(this.mAllComps, this.mCollisionInfos);
 
 
+    this.clockUpdate();     //更新剩余的时间
     this.foodUpdate();      //判断食物是否被吃、更新食物
     this.heroUpdate();      //hero 分裂、聚合
     this.compUpdate();      //comp 的位置更新

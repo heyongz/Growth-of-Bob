@@ -519,6 +519,12 @@ Level1.prototype.txtUpdate = function () {
 Level1.prototype.clockUpdate = function(){
     this.mClock.update();
     this.mTime = this.mClock.getTime(); //返回剩余的时间
+    if(this.mTime === 0){
+        this.mRestart = true;
+        this.tag = 5;
+        gEngine.AudioClips.stopBackgroundAudio();
+        gEngine.GameLoop.stop();
+    }
 
     var msg ="Time:" + this.mTime + "s";
     this.mMsgTime.setText(msg);
