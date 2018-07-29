@@ -65,10 +65,10 @@ Level1.prototype.unloadScene = function () {
                 nextLevel = new Level2();
                 break;
             case 4:
-                nextLevel = new End("assets/pictures/win.png");
+                nextLevel = new End("assets/pictures/win.png", 0);
                 break;
             case 5:
-                nextLevel = new End("assets/pictures/fail.png");
+                nextLevel = new End("assets/pictures/fail.png", 1);
                 break;
         }
         gEngine.Core.startScene(nextLevel);

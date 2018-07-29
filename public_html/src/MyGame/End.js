@@ -10,12 +10,12 @@
 
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function End(spriteTexture) {
+function End(spriteTexture, num) {
     // The camera to view the scene
     this.mCamera = null;
-    this.mMsg = null;
     this.mRestart = false;
     this.kBackground = spriteTexture;
+    this.num = num;
 }
 gEngine.Core.inheritPrototype(End, Scene);
 
@@ -30,8 +30,16 @@ End.prototype.unloadScene = function () {
 
     if (this.mRestart === true)
     {
-        var nextLevel = new Level1();  // next level to be loaded
-        gEngine.Core.startScene(nextLevel);
+        if(this.num === 0){
+            gEngine.Core.startScene(new Begin());
+        }else if(this.num === 1){
+            gEngine.Core.startScene(new Level1());
+        }else if(this.num === 2){
+            gEngine.Core.startScene(new Level2());
+        }else{
+            gEngine.Core.startScene(new Begin());
+        }
+
     }
 };
 

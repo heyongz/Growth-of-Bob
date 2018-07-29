@@ -16,6 +16,7 @@ function Begin() {
     this.mMsg = null;
     this.mRestart = false;
     this.kBackground = "assets/pictures/begin.png";
+    this.kHelp = "assets/pictures/help.png";
 
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kCue = "assets/sounds/cue.wav";
@@ -25,6 +26,7 @@ gEngine.Core.inheritPrototype(Begin, Scene);
 
 Begin.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBackground);
+    gEngine.Textures.loadTexture(this.kHelp);
 
     gEngine.AudioClips.loadAudio(this.kBgClip);
     gEngine.AudioClips.loadAudio(this.kEat);
@@ -35,15 +37,16 @@ Begin.prototype.unloadScene = function () {
     gEngine.LayerManager.cleanUp();
 
     gEngine.Textures.unloadTexture(this.kBackground);
+    gEngine.Textures.unloadTexture(this.kHelp);
 
     gEngine.AudioClips.unloadAudio(this.kBgClip);
     gEngine.AudioClips.unloadAudio(this.kEat);
     gEngine.AudioClips.unloadAudio(this.kCue);
 
-    if (this.mRestart === true)
-    {
-        var nextLevel = new Level1();  // next level to be loaded
-        gEngine.Core.startScene(nextLevel);
+    if (this.mRestart === true){
+        gEngine.Core.startScene(new Level1());
+    }else{
+        gEngine.Core.startScene(new End(this.kHelp, 0));
     }
 };
 
@@ -119,10 +122,9 @@ Begin.prototype.update = function () {
             this.mTextConH.setColor([0.5, 0.5, 0.5, 1]);
             this.mTextConS.setColor([0, 0, 0, 1]);
         }
-        //TODO:control
-        // else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)){
-        //     this.mState = 2;
-        //     gEngine.GameLoop.stop();
-        // }
+        else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Backspace)){
+            this.mRestart = false;
+            gEngine.GameLoop.stop();
+        }
     }
 };

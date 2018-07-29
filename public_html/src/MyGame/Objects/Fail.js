@@ -1,4 +1,4 @@
-/* File: Hero.js 
+/* File: Hero.js
  *
  * Creates and initializes the Hero (Dye)
  * overrides the update function of GameObject to define
