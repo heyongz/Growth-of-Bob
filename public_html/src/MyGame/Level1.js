@@ -5,7 +5,7 @@ function Level1() {
     this.kComp = "assets/pictures/Competitor.png";
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kFood = "assets/pictures/food.png";
-    this.kBoom = "assets/pictures/Boom.png";
+    this.kBoom = "assets/pictures/boom.png";
     this.kCue = "assets/sounds/cue.wav";
     this.kEat = "assets/sounds/eat.wav";
 
