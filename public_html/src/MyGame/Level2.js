@@ -25,6 +25,8 @@ function Level2() {
     this.mCamera = null;
     this.mMinimap = null;
     this.mMinitxt = null;
+    this.mClock = null;
+    this.mTime = null;
 
     this.weight = 100;
 

@@ -13,7 +13,6 @@
 function Begin() {
     // The camera to view the scene
     this.mCamera = null;
-    this.mMsg = null;
     this.mRestart = false;
     this.kBackground = "assets/pictures/begin.png";
     this.kHelp = "assets/pictures/help.png";
