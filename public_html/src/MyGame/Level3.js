@@ -1,20 +1,21 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
-function Level1() {
-    this.kBaby = "assets/pictures/Baby.png";
+function Level3() {
+    this.kAdult = "assets/pictures/Adult.png";
+    this.kAlice = "assets/pictures/Alice.png";
     this.kComp = "assets/pictures/Competitor.png";
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kFood = "assets/pictures/food.png";
-    this.kBoom = "assets/pictures/boom.png";
     this.kCue = "assets/sounds/cue.wav";
     this.kEat = "assets/sounds/eat.wav";
 
 
     this.mAllComps = null;
     this.mAllHeros = null;
+    this.mAllAlice = null;
     this.mAllSpitBall = null;
     this.mAllFood = null;
-    this.mAllBoom = null;
+    this.mAlice = null;
 
     this.centerX = null;
     this.centerY = null;
@@ -26,7 +27,7 @@ function Level1() {
     this.mTime = null;
     this.mBobWeight = null;
 
-    this.weight = 50;
+    this.weight = 70;
 
     //判断是否被吃掉
     this.mRestart = false;
@@ -35,14 +36,14 @@ function Level1() {
     this.tag = 0;
 }
 
-gEngine.Core.inheritPrototype(Level1, Scene);
+gEngine.Core.inheritPrototype(Level3, Scene);
 
 
-Level1.prototype.loadScene = function () {
-    gEngine.Textures.loadTexture(this.kBaby);
+Level3.prototype.loadScene = function () {
+    gEngine.Textures.loadTexture(this.kAdult);
     gEngine.Textures.loadTexture(this.kComp);
     gEngine.Textures.loadTexture(this.kFood);
-    gEngine.Textures.loadTexture(this.kBoom);
+    gEngine.Textures.loadTexture(this.kAlice);
 
     gEngine.AudioClips.loadAudio(this.kBgClip);
     gEngine.AudioClips.loadAudio(this.kEat);
@@ -50,12 +51,12 @@ Level1.prototype.loadScene = function () {
 };
 
 
-Level1.prototype.unloadScene = function () {
+Level3.prototype.unloadScene = function () {
     gEngine.LayerManager.cleanUp();
-    gEngine.Textures.unloadTexture(this.kBaby);
+    gEngine.Textures.unloadTexture(this.kAdult);
     gEngine.Textures.unloadTexture(this.kComp);
     gEngine.Textures.unloadTexture(this.kFood);
-     gEngine.Textures.unloadTexture(this.kBoom);
+    gEngine.Textures.unloadTexture(this.kAlice);
 
     gEngine.AudioClips.unloadAudio(this.kBgClip);
     gEngine.AudioClips.unloadAudio(this.kEat);
@@ -71,6 +72,9 @@ Level1.prototype.unloadScene = function () {
             case 2:
                 nextLevel = new Level2();
                 break;
+            case 3:
+                nextLevel = new Level3();
+                break;
             case 4:
                 nextLevel = new End("assets/pictures/win.png", 0);
                 break;
@@ -83,7 +87,7 @@ Level1.prototype.unloadScene = function () {
 };
 
 
-Level1.prototype.initialize = function () {
+Level3.prototype.initialize = function () {
     this.width = 800;
     this.height = 600;
     this.centerX = 0;
@@ -97,7 +101,7 @@ Level1.prototype.initialize = function () {
         128,
         [0, 0, this.width, this.height]
     );
-    this.mCamera.setBackgroundColor([0.902, 0.839, 0.725, 1]);
+    this.mCamera.setBackgroundColor([0.905, 0.765, 0.953, 1]);
 
     //新建Minimap
     this.mMinimap = new Camera(
@@ -105,7 +109,7 @@ Level1.prototype.initialize = function () {
         512,
         [this.width - 128, this.height - 128, 128, 128]
     );
-    this.mMinimap.setBackgroundColor([0.922, 0.894, 0.843, 1]);
+    this.mMinimap.setBackgroundColor([0.933, 0.871, 0.953, 1]);
     //新建minitxt
 
     // x position of bottom-left corner of the area to be drawn
@@ -119,28 +123,29 @@ Level1.prototype.initialize = function () {
         [-80, 540, 256, 128]
     );
 
-    this.mMinitxt.setBackgroundColor([0.902, 0.839, 0.725, 1]);
+    this.mMinitxt.setBackgroundColor([0.905, 0.765, 0.953, 1]);
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
 
-    this.mBobWeight = 10;
+    this.mAliceWeight = 10;
+    this.mAlice = new Alice(this.kAlice);
+    this.mAllAlice = new GameObjectSet();
+    this.mAllAlice.addToSet(this.mAlice);
+    
     this.mAllHeros = new GameObjectSet();
-    this.mAllHeros.addToSet(new Hero(this.kBaby, 10, this.centerX, this.centerY));
+    this.mAllHeros.addToSet(new Hero(this.kAdult, 10, this.centerX, this.centerY));
 
 
     this.mAllComps = new GameObjectSet();
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 12; i++) {
         this.mAllComps.addToSet(new Competitor(this.kComp));
     }
 
     this.mAllFood = new GameObjectSet();
-    for (let i = 0; i < this.weight * 2; i++) {
+    for (let i = 0; i < this.weight * 4; i++) {
         this.mAllFood.addToSet(new Food(this.kFood));
     }
 
-    this.mAllBoom = new GameObjectSet();
-    for(let i = 0; i < 5; i++){
-        this.mAllBoom.addToSet(new Boom(this.kBoom));
-    }
+
     this.mAllSpitBall = new GameObjectSet();
     gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
     this.mMsg = new FontRenderable(" ");
@@ -152,27 +157,26 @@ Level1.prototype.initialize = function () {
     this.mMsgTime.setColor([0, 0, 0, 0.5]);
     this.mMsgTime.getXform().setPosition(-45, -80);
     this.mMsgTime.setTextHeight(50);
-
 };
 
 
-Level1.prototype.draw = function () {
+Level3.prototype.draw = function () {
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]);
 
     //画 mCamera
     this.mCamera.setupViewProjection();
     this.mAllComps.draw(this.mCamera);
     this.mAllHeros.draw(this.mCamera);
-    this.mAllBoom.draw(this.mCamera);
     this.mAllFood.draw(this.mCamera);
     this.mAllSpitBall.draw(this.mCamera);
+    this.mAlice.draw(this.mCamera);
     //画 mMinimap
     this.mMinimap.setupViewProjection();
     this.mAllComps.draw(this.mMinimap);
     this.mAllHeros.draw(this.mMinimap);
-    this.mAllBoom.draw(this.mMinimap);
     this.mAllFood.draw(this.mMinimap);
     this.mAllSpitBall.draw(this.mMinimap);
+    this.mAlice.draw(this.mMinimap);
 
     //txt
     this.mMinitxt.setupViewProjection();
@@ -181,7 +185,7 @@ Level1.prototype.draw = function () {
 };
 
 
-Level1.prototype.cameraUpdate = function () {
+Level3.prototype.cameraUpdate = function () {
     this.centerX = 0;
     this.centerY = 0;
 
@@ -211,8 +215,28 @@ Level1.prototype.cameraUpdate = function () {
             minY = this.mAllHeros.getObjectAt(i).getXform().getYPos();
         }
     }
-    this.centerX /= this.mAllHeros.size();
-    this.centerY /= this.mAllHeros.size();
+
+    var pX = this.mAlice.getXform().getXPos();
+    var pY = this.mAlice.getXform().getYPos();
+
+    if(pX > maxX){
+        maxX = pX;
+    }
+    if(pX < minX){
+        minX = pX;
+    }
+    if(pY > maxY){
+        maxY = pY;
+    }
+    if(pY < minY){
+        minY = pY;
+    }
+
+    this.centerX += pX;
+    this.centerY += pY;
+
+    this.centerX /= (this.mAllHeros.size()+1);
+    this.centerY /= (this.mAllHeros.size()+1);
 
     const deltaX = Math.max(maxX - this.centerX, this.centerX - minX);
     const deltaY = Math.max(maxY - this.centerY, this.centerY - minY);
@@ -236,7 +260,7 @@ Level1.prototype.cameraUpdate = function () {
 };
 
 
-Level1.prototype.heroUpdate = function () {
+Level3.prototype.heroUpdate = function () {
     //聚合
     var info = new CollisionInfo();
     for (let i = 0; i < this.mAllHeros.size(); i++) {
@@ -249,39 +273,39 @@ Level1.prototype.heroUpdate = function () {
             }
         }
     }
- //吐球
- var mSpitball = null;
- if(gEngine.Input.isKeyClicked(gEngine.Input.keys.C)){
-     for(var i = 0; i < this.mAllHeros.size(); i++){
-         var obj = this.mAllHeros.getObjectAt(i);
-         if(obj.getWeight() > 15){
-             var Vx = obj.getVX();
-             var Vy = obj.getVY();
-             var mHeroPosX = obj.getXform().getXPos();
-             var mHeroPosY = obj.getXform().getYPos();
-             var mHeroSize = obj.getXform().getWidth();
-             var DirectionX = Vx/Math.sqrt(Vx*Vx+Vy*Vy);
-             var DirectionY = Vy/Math.sqrt(Vx*Vx+Vy*Vy);
-             mSpitball = new Spitball(this.kFood, (mHeroPosX + DirectionX * (mHeroSize/2 + 2)), (mHeroPosY + DirectionY * (mHeroSize/2 + 2)), DirectionX, DirectionY);
-             obj.incWeight(-mSpitball.getWeight());
-             this.mAllSpitBall.addToSet(mSpitball);
-         }
-     }
- }
- 
- //吃小球
- var spitball;
- for (let i = 0; i < this.mAllHeros.size(); i++) {
-     var hero = this.mAllHeros.getObjectAt(i);
-     for (let j = 0; j < this.mAllSpitBall.size(); j++) {
-         spitball = this.mAllSpitBall.getObjectAt(j);
-         if (Math.sqrt(Math.pow(hero.getXform().getXPos()-spitball.getXform().getXPos(),2)+Math.pow(hero.getXform().getYPos()-spitball.getXform().getYPos(),2)) < hero.getHeroRadius()+spitball.getSpitballRadius()) {
-             gEngine.AudioClips.playACue(this.kCue); //播放cue声音
-             hero.incWeight(spitball.getWeight());
-             this.mAllSpitBall.removeFromSet(spitball);
-         }
-     }
- }
+    //吐球
+    var mSpitball = null;
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.C)){
+        for(var i = 0; i < this.mAllHeros.size(); i++){
+            var obj = this.mAllHeros.getObjectAt(i);
+            if(obj.getWeight() > 15){
+                var Vx = obj.getVX();
+                var Vy = obj.getVY();
+                var mHeroPosX = obj.getXform().getXPos();
+                var mHeroPosY = obj.getXform().getYPos();
+                var mHeroSize = obj.getXform().getWidth();
+                var DirectionX = Vx/Math.sqrt(Vx*Vx+Vy*Vy);
+                var DirectionY = Vy/Math.sqrt(Vx*Vx+Vy*Vy);
+                mSpitball = new Spitball(this.kFood, (mHeroPosX + DirectionX * (mHeroSize/2 + 2)), (mHeroPosY + DirectionY * (mHeroSize/2 + 2)), DirectionX, DirectionY);
+                obj.incWeight(-mSpitball.getWeight());
+                this.mAllSpitBall.addToSet(mSpitball);
+            }
+        }
+    }
+
+    //吃小球
+    var spitball;
+    for (let i = 0; i < this.mAllHeros.size(); i++) {
+        var hero = this.mAllHeros.getObjectAt(i);
+        for (let j = 0; j < this.mAllSpitBall.size(); j++) {
+            spitball = this.mAllSpitBall.getObjectAt(j);
+            if (Math.sqrt(Math.pow(hero.getXform().getXPos()-spitball.getXform().getXPos(),2)+Math.pow(hero.getXform().getYPos()-spitball.getXform().getYPos(),2)) < hero.getHeroRadius()+spitball.getSpitballRadius()) {
+                gEngine.AudioClips.playACue(this.kCue); //播放cue声音
+                hero.incWeight(spitball.getWeight());
+                this.mAllSpitBall.removeFromSet(spitball);
+            }
+        }
+    }
     //分裂
     var mNewHero = null;
     var mHeroSetLengthNow = this.mAllHeros.size();
@@ -300,50 +324,50 @@ Level1.prototype.heroUpdate = function () {
                     var mAcceleration = 60;
                     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)){
                         if(gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                            var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)/2), mHeroPosY + (mHeroSize/Math.sqrt(2)/2));
+                            var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)/2), mHeroPosY + (mHeroSize/Math.sqrt(2)/2));
                             mNewHero.setVX(-mAcceleration/Math.sqrt(2));
                             mNewHero.setVY(mAcceleration/Math.sqrt(2));
                         }
                         else if(gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                            var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)/2), mHeroPosY + (mHeroSize/Math.sqrt(2)/2));
+                            var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)/2), mHeroPosY + (mHeroSize/Math.sqrt(2)/2));
                             mNewHero.setVX(mAcceleration/Math.sqrt(2));
                             mNewHero.setVY(mAcceleration/Math.sqrt(2));
                         }
                         else{
-                            var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX, mHeroPosY + (mHeroSize/2));
+                            var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX, mHeroPosY + (mHeroSize/2));
                             mNewHero.setVX(mHeroVx);
                             mNewHero.setVY(mAcceleration);
                         }
                     }
                     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.S) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Down)){
                         if(gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                            var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)/2), mHeroPosY - (mHeroSize/Math.sqrt(2)/2));
+                            var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)/2), mHeroPosY - (mHeroSize/Math.sqrt(2)/2));
                             mNewHero.setVX(-mAcceleration/Math.sqrt(2));
                             mNewHero.setVY(-mAcceleration/Math.sqrt(2));
                         }
                         else if(gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                            var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)/2), mHeroPosY - (mHeroSize/Math.sqrt(2)/2));
+                            var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)/2), mHeroPosY - (mHeroSize/Math.sqrt(2)/2));
                             mNewHero.setVX(mAcceleration/Math.sqrt(2));
                             mNewHero.setVY(-mAcceleration/Math.sqrt(2));
                         }
                         else{
-                            var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX, mHeroPosY - (mHeroSize/2));
+                            var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX, mHeroPosY - (mHeroSize/2));
                             mNewHero.setVX(mHeroVx);
                             mNewHero.setVY(-mAcceleration);
                         }
                     }
                     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                        var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX - (mHeroSize/2), mHeroPosY);
+                        var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX - (mHeroSize/2), mHeroPosY);
                         mNewHero.setVX(-mAcceleration);
                         mNewHero.setVY(mHeroVy);
                     }
                     else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                        var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX + (mHeroSize/2), mHeroPosY);
+                        var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX + (mHeroSize/2), mHeroPosY);
                         mNewHero.setVX(+mAcceleration);
                         mNewHero.setVY(mHeroVy);
                     }
                     else {
-                        var mNewHero = new Hero(this.kBaby, mHeroWeight, mHeroPosX + (mHeroSize/4), mHeroPosY);
+                        var mNewHero = new Hero(this.kAdult, mHeroWeight, mHeroPosX + (mHeroSize/4), mHeroPosY);
                         obj.getXform().setPosition(mHeroPosX - (mHeroSize/4), mHeroPosY);
                         mNewHero.setVX(mAcceleration/2);
                         mNewHero.setVY(0);
@@ -361,71 +385,8 @@ Level1.prototype.heroUpdate = function () {
 
 };
 
-Level1.prototype.boomUpdate = function() {
-    var info = new CollisionInfo();
-    for(let i = 0; i < this.mAllHeros.size(); i++){
-        var hero = this.mAllHeros.getObjectAt(i);
-        for(let j = 0; j < this.mAllBoom.size(); j++){
-            var boom = this.mAllBoom.getObjectAt(j);
-            if(hero.getWeight() > boom.getWeight()){
-                if(hero.getRigidBody().collisionTest(boom.getRigidBody(), info)){
-                    this.mAllBoom.removeFromSet(boom);
-                    var heroboom = hero.getWeight()/9;
-                    hero.incWeight(-(8 * heroboom));
-                    var heroSize = hero.getHeroRadius();
-                    var heroPosX = hero.getXform().getXPos();
-                    var heroPosY = hero.getXform().getYPos();
-                    var heroVX = hero.getVX();
-                    var heroVY = hero.getVY();
-                    var mAcceleration = 50;
-                    var mNewHero = null;
-                    //左上
-                    mNewHero = new Hero(this.kBaby, heroboom, heroPosX - heroSize/Math.sqrt(2), heroPosY + heroSize/Math.sqrt(2));
-                    mNewHero.setVX(heroVX - mAcceleration/Math.sqrt(2));
-                    mNewHero.setVY(heroVY + mAcceleration/Math.sqrt(2));
-                    this.mAllHeros.addToSet(mNewHero);
-                    //上
-                    mNewHero = new Hero(this.kBaby, heroboom, heroPosX, heroPosY + heroSize);
-                    mNewHero.setVX(heroVX);
-                    mNewHero.setVY(heroVY + mAcceleration);
-                    this.mAllHeros.addToSet(mNewHero);
-                    //右上
-                    mNewHero = new Hero(this.kBaby, heroboom, heroPosX + heroSize/Math.sqrt(2), heroPosY + heroSize/Math.sqrt(2));
-                    mNewHero.setVX(heroVX + mAcceleration/Math.sqrt(2));
-                    mNewHero.setVY(heroVY + mAcceleration/Math.sqrt(2));
-                    this.mAllHeros.addToSet(mNewHero);
-                    //左
-                    mNewHero = new Hero(this.kBaby, heroboom, heroPosX - heroSize, heroPosY);
-                    mNewHero.setVX(heroVX - mAcceleration);
-                    mNewHero.setVY(heroVY);
-                    this.mAllHeros.addToSet(mNewHero);
-                    //右
-                    mNewHero = new Hero(this.kBaby, heroboom, heroPosX + heroSize, heroPosY);
-                    mNewHero.setVX(heroVX + mAcceleration);
-                    mNewHero.setVY(heroVY);
-                    this.mAllHeros.addToSet(mNewHero);
-                    //左下
-                    mNewHero = new Hero(this.kBaby, heroboom, heroPosX - heroSize/Math.sqrt(2), heroPosY - heroSize/Math.sqrt(2));
-                    mNewHero.setVX(heroVX - mAcceleration/Math.sqrt(2));
-                    mNewHero.setVY(heroVY - mAcceleration/Math.sqrt(2));
-                    this.mAllHeros.addToSet(mNewHero);
-                    //下
-                    mNewHero = new Hero(this.kBaby, heroboom, heroPosX, heroPosY - heroSize);
-                    mNewHero.setVX(heroVX);
-                    mNewHero.setVY(heroVY - mAcceleration);
-                    this.mAllHeros.addToSet(mNewHero);
-                    //右下
-                    mNewHero = new Hero(this.kBaby, heroboom, heroPosX + heroSize/Math.sqrt(2), heroPosY - heroSize/Math.sqrt(2));
-                    mNewHero.setVX(heroVX + mAcceleration/Math.sqrt(2));
-                    mNewHero.setVY(heroVY - mAcceleration/Math.sqrt(2));
-                    this.mAllHeros.addToSet(mNewHero);                   
-                }
-            }
-        }
-    }
-};
 
-Level1.prototype.foodUpdate = function () {
+Level3.prototype.foodUpdate = function () {
     //男主吃食物
     var food;
     for (let i = 0; i < this.mAllHeros.size(); i++) {
@@ -435,16 +396,24 @@ Level1.prototype.foodUpdate = function () {
             if (Math.sqrt(Math.pow(hero.getXform().getXPos() - food.getXform().getXPos(), 2) + Math.pow(hero.getXform().getYPos() - food.getXform().getYPos(), 2)) < hero.getHeroRadius() + food.getFoodRadius()) {
                 gEngine.AudioClips.playACue(this.kCue); //播放cue声音
                 hero.incWeight(food.getWeight());
-                if (hero.getWeight() >= this.weight && this.mAllComps.size() === 0) {
-                    this.mRestart = true;
-                    this.tag = 2;
-
-                    gEngine.GameLoop.stop();
-                }
                 food.setPos();
             }
         }
     }
+
+    //Alice 吃食物
+    for (let i = 0; i < this.mAllAlice.size(); i++) {
+        var hero = this.mAllAlice.getObjectAt(i);
+        for (let j = 0; j < this.mAllFood.size(); j++) {
+            food = this.mAllFood.getObjectAt(j);
+            if (Math.sqrt(Math.pow(hero.getXform().getXPos() - food.getXform().getXPos(), 2) + Math.pow(hero.getXform().getYPos() - food.getXform().getYPos(), 2)) < hero.getAliceRadius() + food.getFoodRadius()) {
+                gEngine.AudioClips.playACue(this.kCue); //播放cue声音
+                hero.incWeight(food.getWeight());
+                food.setPos();
+            }   
+        }
+    }
+
 
     // 敌人吃食物
     for (let i = 0; i < this.mAllComps.size(); i++) {
@@ -470,9 +439,22 @@ Level1.prototype.foodUpdate = function () {
             }
         }
     }
+
+    //Alice 吃小球
+    for (let i = 0; i < this.mAllAlice.size(); i++) {
+        var comp = this.mAllAlice.getObjectAt(i);
+        for (let j = 0; j < this.mAllSpitBall.size(); j++) {
+            var spitball = this.mAllSpitBall.getObjectAt(j);
+            if (Math.sqrt(Math.pow(comp.getXform().getXPos() - spitball.getXform().getXPos(), 2) + Math.pow(comp.getXform().getYPos() - spitball.getXform().getYPos(), 2)) < comp.getAliceRadius() + spitball.getSpitballRadius()) {
+                gEngine.AudioClips.playACue(this.kCue); //播放cue声音
+                comp.incWeight(spitball.getWeight());
+                this.mAllSpitBall.removeFromSet(spitball);
+            }
+        }
+    }
 };
 
-Level1.prototype.calculateMinFood = function(posX, posY){
+Level3.prototype.calculateMinFood = function(posX, posY){
     var px, py, res=0;
     var minValue = 900000;
     for(let i=0; i<this.mAllFood.size(); i++){
@@ -487,9 +469,8 @@ Level1.prototype.calculateMinFood = function(posX, posY){
     return [this.mAllFood.getObjectAt(res).getXform().getXPos(), this.mAllFood.getObjectAt(res).getXform().getYPos()];
 };
 
-
-Level1.prototype.dectectMinHero = function(posX, posY, radius){
-    var px, py, res=-1;
+Level3.prototype.followBob = function(posX,posY){
+    var px, py, res=0;
     var minValue = 900000;
 
     //找到距离我最近的hero
@@ -503,6 +484,36 @@ Level1.prototype.dectectMinHero = function(posX, posY, radius){
         }
     }
 
+    px = this.mAllHeros.getObjectAt(res).getXform().getXPos();
+    py = this.mAllHeros.getObjectAt(res).getXform().getYPos();
+    return [px, py, res];
+};
+
+
+Level3.prototype.dectectMinHero = function(posX, posY, radius){
+    var px, py, res=-1;
+    var minValue = 9000;
+    const range = 20;   //在30*2的方格内探测
+
+    //找到距离我最近的hero
+    for(let i=0; i<this.mAllHeros.size(); i++){
+        px = this.mAllHeros.getObjectAt(i).getXform().getXPos();
+        py = this.mAllHeros.getObjectAt(i).getXform().getYPos();
+        var tmp = Math.pow(posX-px, 2) + Math.pow(posY-py, 2);
+        if(tmp < minValue){
+            minValue = tmp;
+            res = i;
+        }
+    }
+
+    px = this.mAlice.getXform().getXPos();
+    py = this.mAlice.getXform().getYPos();
+    var tmp = Math.pow(posX-px, 2) + Math.pow(posY-py, 2);
+    if(tmp < minValue){
+        minValue = tmp;
+    }
+
+
     // 警戒范围内无hero
     if(res === -1){
         try{
@@ -512,22 +523,30 @@ Level1.prototype.dectectMinHero = function(posX, posY, radius){
             return [0,0];
         }
     }else{
-        px = this.mAllHeros.getObjectAt(res).getXform().getXPos();
-        py = this.mAllHeros.getObjectAt(res).getXform().getYPos();
-        var hero = this.mAllHeros.getObjectAt(res);
-        if(hero.getHeroRadius() >= radius){
-            //反方向的跑
-            return [posX*2-px, posY*2-py];
+        if(tmp === minValue){
+            var alice = this.mAlice;
+            if(alice.getAliceRadius() >= radius){
+                return [posX*2-px, posY*2-py];
+            }else{
+                //追着hero跑
+                return [px,py];
+            }
         }else{
-            //追着hero跑
-            return [px,py];
+            var hero = this.mAllHeros.getObjectAt(res);
+            if(hero.getHeroRadius() >= radius){
+                //反方向的跑
+                return [posX*2-px, posY*2-py];
+            }else{
+                //追着hero跑
+                return [px,py];
+            }
         }
+
     }
 };
 
 
-Level1.prototype.compUpdate = function () {
-    const rate = 1;
+Level3.prototype.compUpdate = function () {
     for(let i=0; i < this.mAllComps.size(); i++){
         var posX = this.mAllComps.getObjectAt(i).getXform().getXPos();
         var posY = this.mAllComps.getObjectAt(i).getXform().getYPos();
@@ -540,7 +559,28 @@ Level1.prototype.compUpdate = function () {
 };
 
 
-Level1.prototype.detectCollision = function(){
+Level3.prototype.aliceUpdate = function(){
+    for(let i=0; i < this.mAllAlice.size(); i++){
+        var posX = this.mAllAlice.getObjectAt(i).getXform().getXPos();
+        var posY = this.mAllAlice.getObjectAt(i).getXform().getYPos();
+        var pos = this.followBob(posX, posY);
+        var dir = this.mAllAlice.getObjectAt(i).discreteDirection([pos[0], pos[1]]);
+        this.mAllAlice.getObjectAt(i).changePicture(dir);
+        var hero = this.mAllHeros.getObjectAt(pos[2]);
+
+        var distance1 = Math.pow(posX-pos[0],2) + Math.pow(posY-pos[1],2);
+        var distance2 = Math.pow(hero.getHeroRadius()+this.mAlice.getAliceRadius()+15,2);
+
+        if(distance1 <= distance2 ){
+            return;
+        }else{
+            GameObject.prototype.compUpdate.call(this.mAllAlice.getObjectAt(i));
+        }
+    }
+};
+
+
+Level3.prototype.detectCollision = function(){
     //碰到敌人
     var info = new CollisionInfo();
     for(let j=0; j<this.mAllComps.size(); j++){
@@ -552,7 +592,7 @@ Level1.prototype.detectCollision = function(){
                     hero.incWeight(comp.getWeight());
                     this.mAllComps.removeFromSet(comp);
                     j--;    //从set中删除后在下一轮循环下标会加1，因此提前减1
-                    if(this.mBobWeight >= this.weight && this.mAllComps.size() === 0){
+                    if(this.mAlice.getWeight() >= this.weight && this.mAllComps.size() === 0){
                         this.mRestart = true;
                         this.tag = 2;
                         gEngine.AudioClips.stopBackgroundAudio();
@@ -572,7 +612,18 @@ Level1.prototype.detectCollision = function(){
             }
         }
     }
-    if(this.mAllComps.size() === 0 && this.mBobWeight >= this.weight){
+
+    //Alice 碰到敌人就死
+    for(let j=0; j<this.mAllComps.size(); j++){
+        if (this.mAlice.getRigidBody().collisionTest(comp.getRigidBody(), info)) {
+            this.mRestart = true;
+            this.tag = 5;
+            gEngine.AudioClips.stopBackgroundAudio();
+            gEngine.GameLoop.stop();
+        }
+    }
+
+    if(this.mAliceWeight >= this.weight){
         this.mRestart = true;
         this.tag = 2;
         gEngine.AudioClips.stopBackgroundAudio();
@@ -580,17 +631,17 @@ Level1.prototype.detectCollision = function(){
     }
 };
 
-Level1.prototype.txtUpdate = function () {
-    this.mBobWeight = 0;
-    for (let i = 0; i < this.mAllHeros.size(); i++) {
-        var hero = this.mAllHeros.getObjectAt(i);
-        this.mBobWeight += hero.getWeight();
+Level3.prototype.txtUpdate = function () {
+    this.mAliceWeight = 0;
+    for (let i = 0; i < this.mAllAlice.size(); i++) {
+        var hero = this.mAllAlice.getObjectAt(i);
+        this.mAliceWeight += hero.getWeight();
     }
-    var msg ="Weight:" + Math.floor(this.mBobWeight);
+    var msg ="Weight:" + Math.floor(this.mAliceWeight);
     this.mMsg.setText(msg);
 };
 
-Level1.prototype.clockUpdate = function(){
+Level3.prototype.clockUpdate = function(){
     this.mClock.update();
     this.mTime = this.mClock.getTime(); //返回剩余的时间
     if(this.mTime === 0){
@@ -605,7 +656,7 @@ Level1.prototype.clockUpdate = function(){
 };
 
 
-Level1.prototype.update = function () {
+Level3.prototype.update = function () {
     this.cameraUpdate();    //更新摄像机大小、中心位置
     this.mCamera.update();
     this.mMinimap.update();
@@ -618,13 +669,13 @@ Level1.prototype.update = function () {
     this.clockUpdate();     //更新剩余的时间
     this.foodUpdate();      //判断食物是否被吃、更新食物
     this.heroUpdate();      //hero 分裂、聚合
-    this.boomUpdate();
     this.compUpdate();      //comp 的位置更新
+    this.aliceUpdate();     //Alice的位置更新
     this.detectCollision(); //判断hero、comp是否碰撞
     this.txtUpdate();       //计算当下Bob重量
 
+    this.mAlice.update();
     this.mAllHeros.update(this.centerX, this.centerY);  //hero 的键盘响应以及自动聚合
     this.mAllComps.updateSpitball();
     this.mAllSpitBall.updateSpitball();
-    this.mAllBoom.updateSpitball();
 };

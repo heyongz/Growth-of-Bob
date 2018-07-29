@@ -466,7 +466,7 @@ Level2.prototype.BlackholeUpdate = function(){
 
 Level2.prototype.calculateMinFood = function(posX, posY){
     var px, py, res=-1;
-    var minValue = 10000;
+    var minValue = 900000;
     for(let i=0; i<this.mAllFood.size(); i++){
         px = this.mAllFood.getObjectAt(i).getXform().getXPos();
         py = this.mAllFood.getObjectAt(i).getXform().getYPos();
@@ -482,7 +482,7 @@ Level2.prototype.calculateMinFood = function(posX, posY){
 
 Level2.prototype.dectectMinHero = function(posX, posY, radius){
     var px, py, res=-1;
-    var minValue = 9000;
+    var minValue = 900000;
     const range = 20;   //在30*2的方格内探测
 
     //找到距离我最近的hero
@@ -505,6 +505,8 @@ Level2.prototype.dectectMinHero = function(posX, posY, radius){
             return [0,0];
         }
     }else{
+        px = this.mAllHeros.getObjectAt(res).getXform().getXPos();
+        py = this.mAllHeros.getObjectAt(res).getXform().getYPos();
         var hero = this.mAllHeros.getObjectAt(res);
         if(hero.getHeroRadius() >= radius){
             //反方向的跑
