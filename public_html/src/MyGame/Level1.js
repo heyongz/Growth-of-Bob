@@ -3,7 +3,6 @@
 function Level1() {
     this.kBaby = "assets/pictures/Baby.png";
     this.kComp = "assets/pictures/Competitor.png";
-    this.kBackground = "assets/pictures/bg1.png";
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kFood = "assets/pictures/food.png";
     this.kCue = "assets/sounds/cue.wav";
@@ -20,7 +19,6 @@ function Level1() {
 
     this.mCamera = null;
     this.mMinimap = null;
-    this.mBackground = null;
 
     this.weight = 50;
 
@@ -37,7 +35,6 @@ gEngine.Core.inheritPrototype(Level1, Scene);
 Level1.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kBaby);
     gEngine.Textures.loadTexture(this.kComp);
-    gEngine.Textures.loadTexture(this.kBackground);
     gEngine.Textures.loadTexture(this.kFood);
 
     gEngine.AudioClips.loadAudio(this.kBgClip);
@@ -50,7 +47,6 @@ Level1.prototype.unloadScene = function () {
     gEngine.LayerManager.cleanUp();
     gEngine.Textures.unloadTexture(this.kBaby);
     gEngine.Textures.unloadTexture(this.kComp);
-    gEngine.Textures.unloadTexture(this.kBackground);
     gEngine.Textures.unloadTexture(this.kFood);
 
     gEngine.AudioClips.unloadAudio(this.kBgClip);
@@ -91,7 +87,7 @@ Level1.prototype.initialize = function () {
         128,
         [0, 0, this.width, this.height]
     );
-    this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
+    this.mCamera.setBackgroundColor([0.902, 0.839, 0.725, 1]);
 
     //新建Minimap
     this.mMinimap = new Camera(
@@ -99,7 +95,7 @@ Level1.prototype.initialize = function () {
         512,
         [this.width - 128, this.height - 128, 128, 128]
     );
-    this.mMinimap.setBackgroundColor([0.0, 0.8, 0.8, 0.5]);
+    this.mMinimap.setBackgroundColor([0.922, 0.894, 0.843, 1]);
     gEngine.DefaultResources.setGlobalAmbientIntensity(3);
 
     this.mAllHeros = new GameObjectSet();
@@ -117,7 +113,6 @@ Level1.prototype.initialize = function () {
     }
 
     this.mAllSpitBall = new GameObjectSet();
-    this.mBackground = new Background(this.kBackground);
     gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
 };
 
@@ -127,14 +122,12 @@ Level1.prototype.draw = function () {
 
     //画 mCamera
     this.mCamera.setupViewProjection();
-    this.mBackground.draw(this.mCamera);
     this.mAllComps.draw(this.mCamera);
     this.mAllHeros.draw(this.mCamera,);
     this.mAllFood.draw(this.mCamera);
     this.mAllSpitBall.draw(this.mCamera);
     //画 mMinimap
     this.mMinimap.setupViewProjection();
-    this.mBackground.draw(this.mMinimap);
     this.mAllComps.draw(this.mMinimap);
     this.mAllHeros.draw(this.mMinimap);
     this.mAllFood.draw(this.mMinimap);
