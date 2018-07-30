@@ -64,6 +64,7 @@ Begin.prototype.unloadScene = function () {
 
 
 Begin.prototype.initialize = function () {
+    document.getElementById('info').innerText = "";
     this.width = 800;
     this.height = 600;
 

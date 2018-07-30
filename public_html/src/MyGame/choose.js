@@ -73,6 +73,7 @@ choose.prototype.unloadScene = function () {
 
 
 choose.prototype.initialize = function () {
+    document.getElementById('info').innerText = "";
     this.width = 800;
     this.height = 600;
 
@@ -86,21 +87,21 @@ choose.prototype.initialize = function () {
     this.mBackground = new Fail(this.kBackground);
 
     this.mTextConB = new FontRenderable("Baby");
-    this._initText(this.mTextConB, -50, 200, [0.5, 0.5, 0.5, 0.5], 70);
+    this._initText(this.mTextConB, -50, 50, [0.5, 0.5, 0.5, 0.5], 50);
 
     this.mTextConT = new FontRenderable("Teen");
-    this._initText(this.mTextConT, -50, 70, [0.5, 0.5, 0.5, 1], 70);
+    this._initText(this.mTextConT, -50, -20, [0.5, 0.5, 0.5, 1], 50);
 
     this.mTextConA = new FontRenderable("Adult");
-    this._initText(this.mTextConA, -50, -60, [0.5, 0.5, 0.5, 1], 70);
+    this._initText(this.mTextConA, -50, -90, [0.5, 0.5, 0.5, 1], 50);
 
     this.mTextConC = new FontRenderable("Extra");
-    this._initText(this.mTextConC, -50, -180, [0.5, 0.5, 0.5, 1], 70);
+    this._initText(this.mTextConC, -50, -160, [0.5, 0.5, 0.5, 1], 50);
 
     var sel = new SpriteRenderable(this.kButton);
     sel.setElementPixelPositions(0,64, 0, 64);
     sel.getXform().setSize(64, 64);
-    sel.getXform().setPosition(-120, 200);
+    sel.getXform().setPosition(-120, 50);
     this.mS = new GameObject(sel);
 
 };
