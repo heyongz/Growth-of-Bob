@@ -28,6 +28,7 @@ function Level3() {
     this.mBobWeight = null;
 
     this.weight = 70;
+    this.minValue = 6400;//80*80
 
     //判断是否被吃掉
     this.mRestart = false;
@@ -494,7 +495,7 @@ Level3.prototype.followBob = function(posX,posY){
 
 Level3.prototype.dectectMinHero = function(posX, posY, radius){
     var px, py, res=-1;
-    var minValue = 9000;
+    var minValue = this.minValue;
 
     //找到距离我最近的hero
     for(let i=0; i<this.mAllHeros.size(); i++){

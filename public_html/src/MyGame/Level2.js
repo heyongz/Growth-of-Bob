@@ -29,6 +29,7 @@ function Level2() {
     this.mTime = null;
 
     this.weight = 100;
+    this.minValue = 6400;//80*80
 
     //判断是否被吃掉
     this.mRestart = false;
@@ -496,7 +497,7 @@ Level2.prototype.calculateMinFood = function(posX, posY){
 
 Level2.prototype.dectectMinHero = function(posX, posY, radius){
     var px, py, res=-1;
-    var minValue = 900000;
+    var minValue = this.minValue;
     const range = 20;   //在30*2的方格内探测
 
     //找到距离我最近的hero
