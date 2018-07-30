@@ -20,6 +20,7 @@ function Begin() {
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kCue = "assets/sounds/cue.wav";
     this.kEat = "assets/sounds/eat.wav";
+
     this.tag = 0;
 }
 gEngine.Core.inheritPrototype(Begin, Scene);
@@ -78,10 +79,10 @@ Begin.prototype.initialize = function () {
     this.mTextConS = new FontRenderable("START");
     this._initText(this.mTextConS, 0, -50, [0.5, 0.5, 0.5, 0.5], 50);
 
-    this.mTextConH = new FontRenderable("HELP");
+    this.mTextConH = new FontRenderable("Menu");
     this._initText(this.mTextConH, 0, -120, [0.5, 0.5, 0.5, 1], 50);
 
-    this.mTextConM = new FontRenderable("Menu");
+    this.mTextConM = new FontRenderable("HELP");
     this._initText(this.mTextConM, 0, -190, [0.5, 0.5, 0.5, 1], 50);
 
     this.mTextConC = new FontRenderable("Choose > ");
@@ -147,7 +148,7 @@ Begin.prototype.update = function () {
         }
         else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Backspace)){
             this.mRestart = true;
-            this.tag = 2;
+            this.tag = 3;
             gEngine.GameLoop.stop();
         }
     }
@@ -164,7 +165,7 @@ Begin.prototype.update = function () {
         }
         else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Backspace)){
             this.mRestart = true;
-            this.tag = 3;
+            this.tag = 2;
             gEngine.GameLoop.stop();
         }
     }

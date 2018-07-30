@@ -36,7 +36,16 @@ End.prototype.unloadScene = function () {
             gEngine.Core.startScene(new Level1());
         }else if(this.num === 2){
             gEngine.Core.startScene(new Level2());
-        }else{
+        }else if(this.num === 3){
+            gEngine.Core.startScene(new Level3());
+        }
+        else if(this.num === 4){
+            gEngine.Core.startScene(new Level4());
+        }
+        else if(this.num === 5){
+            gEngine.Core.startScene(new Begin());
+        }
+        else{
             gEngine.Core.startScene(new Begin());
         }
 
@@ -76,6 +85,11 @@ End.prototype.update = function () {
     //gEngine.GameLoop.stop();
     if (gEngine.Input.isKeyPressed(gEngine.Input.keys.R)) {
         this.mRestart = true;
+        gEngine.GameLoop.stop();
+    }
+    if (gEngine.Input.isKeyPressed(gEngine.Input.keys.Q)) {
+        this.mRestart = true;
+        this.num = 5;
         gEngine.GameLoop.stop();
     }
 };

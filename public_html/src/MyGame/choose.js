@@ -63,6 +63,9 @@ choose.prototype.unloadScene = function () {
             case 4:
                 nextLevel = new Level4();
                 break;
+            case 5:
+                nextLevel = new Begin();
+                break;
         }
         gEngine.Core.startScene(nextLevel);
     }
@@ -214,5 +217,12 @@ choose.prototype.update = function () {
             this.tag = 4;
             gEngine.GameLoop.stop();
         }
+    }
+
+    if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Q) || gEngine.Input.isKeyClicked(gEngine.Input.keys.R))
+    {
+        this.mRestart = true;
+        this.tag = 5;
+        gEngine.GameLoop.stop();
     }
 };
