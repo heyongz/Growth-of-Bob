@@ -5,8 +5,8 @@ function Spitball(texture, posX, posY, vX, vY) {
     this.radius = 2*Math.sqrt(this.weight);
     this.unitVecX = vX;
     this.unitVecY = vY;
-    this.vX = vX * 50;
-    this.vY = vY * 50;
+    this.vX = vX * 60;
+    this.vY = vY * 60;
     this.mSpitball = new SpriteRenderable(texture);
     this.mSpitball.setColor([1, 1, 1, 0]);
     this.mSpitball.getXform().incRotationByDegree(Math.random() * 360);

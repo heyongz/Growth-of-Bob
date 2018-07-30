@@ -6,9 +6,9 @@ function Level1() {
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kFood = "assets/pictures/food.png";
     this.kBoom = "assets/pictures/boom.png";
+    this.kLevel = "assets/pictures/level1.png"
     this.kCue = "assets/sounds/cue.wav";
     this.kEat = "assets/sounds/eat.wav";
-
 
     this.mAllComps = null;
     this.mAllHeros = null;
@@ -24,6 +24,10 @@ function Level1() {
     this.mMinitxt = null;
     this.mClock = null;
     this.mTime = null;
+
+    this.mClockLag = null;
+    this.flag = false;
+
     this.mBobWeight = null;
 
     this.weight = 50;
@@ -44,6 +48,7 @@ Level1.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kComp);
     gEngine.Textures.loadTexture(this.kFood);
     gEngine.Textures.loadTexture(this.kBoom);
+    gEngine.Textures.loadTexture(this.kLevel);
 
     gEngine.AudioClips.loadAudio(this.kBgClip);
     gEngine.AudioClips.loadAudio(this.kEat);
@@ -56,7 +61,8 @@ Level1.prototype.unloadScene = function () {
     gEngine.Textures.unloadTexture(this.kBaby);
     gEngine.Textures.unloadTexture(this.kComp);
     gEngine.Textures.unloadTexture(this.kFood);
-     gEngine.Textures.unloadTexture(this.kBoom);
+    gEngine.Textures.unloadTexture(this.kBoom);
+    gEngine.Textures.unloadTexture(this.kLevel);
 
     gEngine.AudioClips.unloadAudio(this.kBgClip);
     gEngine.AudioClips.unloadAudio(this.kEat);
@@ -95,6 +101,7 @@ Level1.prototype.initialize = function () {
     this.centerY = 0;
     this.mTime = 200;
     this.mClock = new Clock(this.mTime);
+    this.mClockLag = new Clock(2);
 
     //新建摄像机
     this.mCamera = new Camera(
@@ -158,31 +165,42 @@ Level1.prototype.initialize = function () {
     this.mMsgTime.getXform().setPosition(-45, -80);
     this.mMsgTime.setTextHeight(50);
 
+    //放置Level1
+    this.mDye = new SpriteRenderable(this.kLevel);
+    this.mDye.setColor([1, 1, 1, 0]);
+    this.mDye.getXform().setPosition(0, 0);
+    this.mDye.getXform().setSize(128, 96);
+    this.mDye.setElementPixelPositions(0, 800, 0, 600);
+
 };
 
 
 Level1.prototype.draw = function () {
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]);
-
-    //画 mCamera
     this.mCamera.setupViewProjection();
-    this.mAllComps.draw(this.mCamera);
-    this.mAllHeros.draw(this.mCamera);
-    this.mAllBoom.draw(this.mCamera);
-    this.mAllFood.draw(this.mCamera);
-    this.mAllSpitBall.draw(this.mCamera);
-    //画 mMinimap
-    this.mMinimap.setupViewProjection();
-    this.mAllComps.draw(this.mMinimap);
-    this.mAllHeros.draw(this.mMinimap);
-    this.mAllBoom.draw(this.mMinimap);
-    this.mAllFood.draw(this.mMinimap);
-    this.mAllSpitBall.draw(this.mMinimap);
+    if(this.flag === false){
+        this.mDye.draw(this.mCamera);
+    }else {
+        //画 mCamera
 
-    //txt
-    this.mMinitxt.setupViewProjection();
-    this.mMsg.draw(this.mMinitxt);
-    this.mMsgTime.draw(this.mMinitxt);
+        this.mAllComps.draw(this.mCamera);
+        this.mAllHeros.draw(this.mCamera);
+        this.mAllBoom.draw(this.mCamera);
+        this.mAllFood.draw(this.mCamera);
+        this.mAllSpitBall.draw(this.mCamera);
+        //画 mMinimap
+        this.mMinimap.setupViewProjection();
+        this.mAllComps.draw(this.mMinimap);
+        this.mAllHeros.draw(this.mMinimap);
+        this.mAllBoom.draw(this.mMinimap);
+        this.mAllFood.draw(this.mMinimap);
+        this.mAllSpitBall.draw(this.mMinimap);
+
+        //txt
+        this.mMinitxt.setupViewProjection();
+        this.mMsg.draw(this.mMinitxt);
+        this.mMsgTime.draw(this.mMinitxt);
+    }
 };
 
 
@@ -376,6 +394,7 @@ Level1.prototype.boomUpdate = function() {
             if(hero.getWeight() > boom.getWeight()){
                 if(hero.getRigidBody().collisionTest(boom.getRigidBody(), info)){
                     this.mAllBoom.removeFromSet(boom);
+                    hero.incWeight(20);
                     var heroboom = hero.getWeight()/9;
                     hero.incWeight(-(8 * heroboom));
                     var heroSize = hero.getHeroRadius();
@@ -383,7 +402,7 @@ Level1.prototype.boomUpdate = function() {
                     var heroPosY = hero.getXform().getYPos();
                     var heroVX = hero.getVX();
                     var heroVY = hero.getVY();
-                    var mAcceleration = 50;
+                    var mAcceleration = 40;
                     var mNewHero = null;
                     //左上
                     mNewHero = new Hero(this.kBaby, heroboom, heroPosX - heroSize/Math.sqrt(2), heroPosY + heroSize/Math.sqrt(2));
@@ -612,25 +631,33 @@ Level1.prototype.clockUpdate = function(){
 
 
 Level1.prototype.update = function () {
-    this.cameraUpdate();    //更新摄像机大小、中心位置
-    this.mCamera.update();
-    this.mMinimap.update();
-    this.mMinitxt.update();
+    this.mClockLag.update();
+    this.mTime1 = this.mClockLag.getTime();
+    if(this.mTime1 === 0){
+        //画背景
+        this.flag = true;
+    }
+    if(this.flag === true){
+        this.cameraUpdate();    //更新摄像机大小、中心位置
+        this.mCamera.update();
+        this.mMinimap.update();
+        this.mMinitxt.update();
 
 
-    gEngine.Physics.processCollision(this.mAllHeros, this.mCollisionInfos);
-    gEngine.Physics.processCollision(this.mAllComps, this.mCollisionInfos);
+        gEngine.Physics.processCollision(this.mAllHeros, this.mCollisionInfos);
+        gEngine.Physics.processCollision(this.mAllComps, this.mCollisionInfos);
 
-    this.clockUpdate();     //更新剩余的时间
-    this.foodUpdate();      //判断食物是否被吃、更新食物
-    this.heroUpdate();      //hero 分裂、聚合
-    this.boomUpdate();
-    this.compUpdate();      //comp 的位置更新
-    this.detectCollision(); //判断hero、comp是否碰撞
-    this.txtUpdate();       //计算当下Bob重量
+        this.clockUpdate();     //更新剩余的时间
+        this.foodUpdate();      //判断食物是否被吃、更新食物
+        this.heroUpdate();      //hero 分裂、聚合
+        this.boomUpdate();
+        this.compUpdate();      //comp 的位置更新
+        this.detectCollision(); //判断hero、comp是否碰撞
+        this.txtUpdate();       //计算当下Bob重量
 
-    this.mAllHeros.update(this.centerX, this.centerY);  //hero 的键盘响应以及自动聚合
-    this.mAllComps.updateSpitball();
-    this.mAllSpitBall.updateSpitball();
-    this.mAllBoom.updateSpitball();
+        this.mAllHeros.update(this.centerX, this.centerY);  //hero 的键盘响应以及自动聚合
+        this.mAllComps.updateSpitball();
+        this.mAllSpitBall.updateSpitball();
+        this.mAllBoom.updateSpitball();
+    }
 };

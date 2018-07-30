@@ -507,6 +507,7 @@ Level4.prototype.boomUpdate = function() {
             if(hero.getWeight() > boom.getWeight()){
                 if(hero.getRigidBody().collisionTest(boom.getRigidBody(), info)){
                     this.mAllBoom.removeFromSet(boom);
+                    hero.incWeight(20);
                     var heroboom = hero.getWeight()/9;
                     hero.incWeight(-(8 * heroboom));
                     var heroSize = hero.getHeroRadius();
@@ -514,7 +515,7 @@ Level4.prototype.boomUpdate = function() {
                     var heroPosY = hero.getXform().getYPos();
                     var heroVX = hero.getVX();
                     var heroVY = hero.getVY();
-                    var mAcceleration = 50;
+                    var mAcceleration = 40;
                     var mNewHero = null;
                     //左上
                     mNewHero = new Hero(this.kAdult, heroboom, heroPosX - heroSize/Math.sqrt(2), heroPosY + heroSize/Math.sqrt(2));
@@ -569,6 +570,7 @@ Level4.prototype.boomUpdate = function() {
             if(hero.getWeight() > boom.getWeight()){
                 if(hero.getRigidBody().collisionTest(boom.getRigidBody(), info)){
                     this.mAllBoom.removeFromSet(boom);
+                    hero.incWeight(20);
                     var heroboom = hero.getWeight()/9;
                     hero.incWeight(-(8 * heroboom));
                     var heroSize = hero.getHeroRadius();
@@ -576,7 +578,7 @@ Level4.prototype.boomUpdate = function() {
                     var heroPosY = hero.getXform().getYPos();
                     var heroVX = hero.getVX();
                     var heroVY = hero.getVY();
-                    var mAcceleration = 50;
+                    var mAcceleration = 40;
                     var mNewHero = null;
                     //左上
                     mNewHero = new Hero2(this.kAlice, heroboom, heroPosX - heroSize/Math.sqrt(2), heroPosY + heroSize/Math.sqrt(2));

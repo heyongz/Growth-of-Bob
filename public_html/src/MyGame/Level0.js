@@ -37,6 +37,7 @@ function Level0 () {
     this.mTime = null;
     this.mBobWeight = null;
 
+    this.skipTime = null;
     this.wFlag = false;
     this.sFlag = false;
     this.dFlag = false;
@@ -116,6 +117,7 @@ Level0.prototype.initialize = function () {
     this.centerX = 0;
     this.centerY = 0;
     this.mTime = 180;
+    this.skipTime = 180;
     this.mClock = new Clock(this.mTime);
 
     //新建摄像机
@@ -464,6 +466,7 @@ Level0.prototype.boomUpdate = function() {
                 if(hero.getWeight() > boom.getWeight()){
                     if(hero.getRigidBody().collisionTest(boom.getRigidBody(), info)){
                         this.mAllBoom.removeFromSet(boom);
+                        hero.incWeight(20);
                         var heroboom = hero.getWeight()/9;
                         hero.incWeight(-(8 * heroboom));
                         var heroSize = hero.getHeroRadius();
@@ -471,7 +474,7 @@ Level0.prototype.boomUpdate = function() {
                         var heroPosY = hero.getXform().getYPos();
                         var heroVX = hero.getVX();
                         var heroVY = hero.getVY();
-                        var mAcceleration = 50;
+                        var mAcceleration = 40;
                         var mNewHero = null;
                         //左上
                         mNewHero = new Hero(this.kBaby, heroboom, heroPosX - heroSize/Math.sqrt(2), heroPosY + heroSize/Math.sqrt(2));
@@ -591,7 +594,19 @@ Level0.prototype.update = function () {
     this.boomUpdate();
     this.detectCollision(); //判断hero、comp是否碰撞
     this.BlackholeUpdate();
-    
+    if(gEngine.Input.isKeyPressed(gEngine.Input.keys.K)){
+        this.skipTime -= 1;
+    }else{
+        this.skipTime = 120;
+    }
+
+    if(this.skipTime === 0){
+        this.mRestart = true;
+        this.tag = 1;
+        gEngine.AudioClips.stopBackgroundAudio();
+        gEngine.GameLoop.stop();
+    }
+
     this.controlUpdate();
     if(this.blackholeFlag === true){
         this.blackholetime -= 1;

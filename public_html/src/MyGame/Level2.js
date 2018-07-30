@@ -4,6 +4,7 @@ function Level2() {
     this.kTeen = "assets/pictures/Teen.png";
     this.kComp = "assets/pictures/Competitor.png";
     this.kFood = "assets/pictures/food.png";
+    this.kLevel = "assets/pictures/level2.png"
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kCue = "assets/sounds/cue.wav";
     this.kEat = "assets/sounds/eat.wav";
@@ -27,6 +28,8 @@ function Level2() {
     this.mMinitxt = null;
     this.mClock = null;
     this.mTime = null;
+    this.mClockLag = null;
+    this.flag = false;
 
     this.weight = 100;
     this.minValue = 6400;//80*80
@@ -49,6 +52,7 @@ Level2.prototype.loadScene = function () {
     gEngine.AudioClips.loadAudio(this.kBgClip);
     gEngine.AudioClips.loadAudio(this.kEat);
     gEngine.AudioClips.loadAudio(this.kCue);
+    gEngine.Textures.loadTexture(this.kLevel);
 };
 
 
@@ -61,11 +65,11 @@ Level2.prototype.unloadScene = function () {
     gEngine.AudioClips.unloadAudio(this.kBgClip);
     gEngine.AudioClips.unloadAudio(this.kEat);
     gEngine.AudioClips.unloadAudio(this.kCue);
+    gEngine.Textures.unloadTexture(this.kLevel);
 
     if (this.mRestart === true) {
         var nextLevel;  // next level to be loaded
-        switch(this.tag)
-        {
+        switch (this.tag) {
             case 1:
                 nextLevel = new Level1();
                 break;
@@ -135,10 +139,10 @@ Level2.prototype.initialize = function () {
     }
 
     this.mAllBlackhole = new GameObjectSet();
-    for(let i = 0; i < 4; i++){
+    for (let i = 0; i < 4; i++) {
         this.mAllBlackhole.addToSet(new Blackhole(this.kBlackhole));
     }
-    
+
     this.mAllSpitBall = new GameObjectSet();
     gEngine.AudioClips.playBackgroundAudio(this.kBgClip);
 
@@ -151,33 +155,44 @@ Level2.prototype.initialize = function () {
     this.mMsgTime.setColor([0, 0, 0, 0.5]);
     this.mMsgTime.getXform().setPosition(-45, -80);
     this.mMsgTime.setTextHeight(50);
+
+    this.mClockLag = new Clock(2);
+    this.mDye = new SpriteRenderable(this.kLevel);
+    this.mDye.setColor([1, 1, 1, 0]);
+    this.mDye.getXform().setPosition(0, 0);
+    this.mDye.getXform().setSize(128, 96);
+    this.mDye.setElementPixelPositions(0, 800, 0, 600);
+
 };
 
 
 Level2.prototype.draw = function () {
     gEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]);
-
-    //画 mCamera
     this.mCamera.setupViewProjection();
-    
-    this.mAllComps.draw(this.mCamera);
-    this.mAllHeros.draw(this.mCamera);
-    this.mAllFood.draw(this.mCamera);
-    this.mAllSpitBall.draw(this.mCamera);
-    this.mAllBlackhole.draw(this.mCamera);
+    if (this.flag === false) {
+        this.mDye.draw(this.mCamera);
+    } else {
+        //画 mCamera
 
-    //画 mMinimap
-    this.mMinimap.setupViewProjection();
-    this.mAllComps.draw(this.mMinimap);
-    this.mAllHeros.draw(this.mMinimap);
-    this.mAllFood.draw(this.mMinimap);
-    this.mAllSpitBall.draw(this.mMinimap);
-    this.mAllBlackhole.draw(this.mMinimap);
+        this.mAllComps.draw(this.mCamera);
+        this.mAllHeros.draw(this.mCamera);
+        this.mAllFood.draw(this.mCamera);
+        this.mAllSpitBall.draw(this.mCamera);
+        this.mAllBlackhole.draw(this.mCamera);
 
-    //txt
-    this.mMinitxt.setupViewProjection();
-    this.mMsg.draw(this.mMinitxt);
-    this.mMsgTime.draw(this.mMinitxt);
+        //画 mMinimap
+        this.mMinimap.setupViewProjection();
+        this.mAllComps.draw(this.mMinimap);
+        this.mAllHeros.draw(this.mMinimap);
+        this.mAllFood.draw(this.mMinimap);
+        this.mAllSpitBall.draw(this.mMinimap);
+        this.mAllBlackhole.draw(this.mMinimap);
+
+        //txt
+        this.mMinitxt.setupViewProjection();
+        this.mMsg.draw(this.mMinitxt);
+        this.mMsgTime.draw(this.mMinitxt);
+    }
 };
 
 
@@ -253,24 +268,24 @@ Level2.prototype.heroUpdate = function () {
 
     //吐球
     var mSpitball = null;
-    if(this.outControl === false){
-        if(gEngine.Input.isKeyClicked(gEngine.Input.keys.C)){
-            for(var i = 0; i < this.mAllHeros.size(); i++){
+    if (this.outControl === false) {
+        if (gEngine.Input.isKeyClicked(gEngine.Input.keys.C)) {
+            for (var i = 0; i < this.mAllHeros.size(); i++) {
                 var obj = this.mAllHeros.getObjectAt(i);
-                if(obj.getWeight() > 15){
+                if (obj.getWeight() > 15) {
                     var Vx = obj.getVX();
                     var Vy = obj.getVY();
                     var mHeroPosX = obj.getXform().getXPos();
                     var mHeroPosY = obj.getXform().getYPos();
                     var mHeroSize = obj.getXform().getWidth();
-                    var DirectionX = Vx/Math.sqrt(Vx*Vx+Vy*Vy);
-                    var DirectionY = Vy/Math.sqrt(Vx*Vx+Vy*Vy);
-                    mSpitball = new Spitball(this.kFood, (mHeroPosX + DirectionX * (mHeroSize/2 + 2)), (mHeroPosY + DirectionY * (mHeroSize/2 + 2)), DirectionX, DirectionY);
+                    var DirectionX = Vx / Math.sqrt(Vx * Vx + Vy * Vy);
+                    var DirectionY = Vy / Math.sqrt(Vx * Vx + Vy * Vy);
+                    mSpitball = new Spitball(this.kFood, (mHeroPosX + DirectionX * (mHeroSize / 2 + 2)), (mHeroPosY + DirectionY * (mHeroSize / 2 + 2)), DirectionX, DirectionY);
                     obj.incWeight(-mSpitball.getWeight());
                     this.mAllSpitBall.addToSet(mSpitball);
                 }
             }
-        }        
+        }
     }
 
     //吃小球
@@ -279,7 +294,7 @@ Level2.prototype.heroUpdate = function () {
         var hero = this.mAllHeros.getObjectAt(i);
         for (let j = 0; j < this.mAllSpitBall.size(); j++) {
             spitball = this.mAllSpitBall.getObjectAt(j);
-            if (Math.sqrt(Math.pow(hero.getXform().getXPos()-spitball.getXform().getXPos(),2)+Math.pow(hero.getXform().getYPos()-spitball.getXform().getYPos(),2)) < hero.getHeroRadius()+spitball.getSpitballRadius()) {
+            if (Math.sqrt(Math.pow(hero.getXform().getXPos() - spitball.getXform().getXPos(), 2) + Math.pow(hero.getXform().getYPos() - spitball.getXform().getYPos(), 2)) < hero.getHeroRadius() + spitball.getSpitballRadius()) {
                 gEngine.AudioClips.playACue(this.kCue); //播放cue声音
                 hero.incWeight(spitball.getWeight());
                 this.mAllSpitBall.removeFromSet(spitball);
@@ -291,7 +306,7 @@ Level2.prototype.heroUpdate = function () {
     //分裂
     var mNewHero = null;
     var mHeroSetLengthNow = this.mAllHeros.size();
-    if(this.outControl === false){
+    if (this.outControl === false) {
         if (gEngine.Input.isKeyClicked(gEngine.Input.keys.Space)) {
             if (mHeroSetLengthNow <= 8) {
                 for (var j = 0; j < mHeroSetLengthNow; j++) {
@@ -305,66 +320,66 @@ Level2.prototype.heroUpdate = function () {
                         var mHeroVx = obj.getVX();
                         var mHeroVy = obj.getVY();
                         var mAcceleration = 60;
-                        if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)){
-                            if(gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)/2), mHeroPosY + (mHeroSize/Math.sqrt(2)/2));
-                                mNewHero.setVX(-mAcceleration/Math.sqrt(2));
-                                mNewHero.setVY(mAcceleration/Math.sqrt(2));
+                        if (gEngine.Input.isKeyPressed(gEngine.Input.keys.W) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Up)) {
+                            if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
+                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize / Math.sqrt(2) / 2), mHeroPosY + (mHeroSize / Math.sqrt(2) / 2));
+                                mNewHero.setVX(-mAcceleration / Math.sqrt(2));
+                                mNewHero.setVY(mAcceleration / Math.sqrt(2));
                             }
-                            else if(gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)/2), mHeroPosY + (mHeroSize/Math.sqrt(2)/2));
-                                mNewHero.setVX(mAcceleration/Math.sqrt(2));
-                                mNewHero.setVY(mAcceleration/Math.sqrt(2));
+                            else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize / Math.sqrt(2) / 2), mHeroPosY + (mHeroSize / Math.sqrt(2) / 2));
+                                mNewHero.setVX(mAcceleration / Math.sqrt(2));
+                                mNewHero.setVY(mAcceleration / Math.sqrt(2));
                             }
-                            else{
-                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX, mHeroPosY + (mHeroSize/2));
+                            else {
+                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX, mHeroPosY + (mHeroSize / 2));
                                 mNewHero.setVX(mHeroVx);
                                 mNewHero.setVY(mAcceleration);
                             }
                         }
-                        else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.S) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Down)){
-                            if(gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/Math.sqrt(2)/2), mHeroPosY - (mHeroSize/Math.sqrt(2)/2));
-                                mNewHero.setVX(-mAcceleration/Math.sqrt(2));
-                                mNewHero.setVY(-mAcceleration/Math.sqrt(2));
+                        else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.S) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Down)) {
+                            if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
+                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize / Math.sqrt(2) / 2), mHeroPosY - (mHeroSize / Math.sqrt(2) / 2));
+                                mNewHero.setVX(-mAcceleration / Math.sqrt(2));
+                                mNewHero.setVY(-mAcceleration / Math.sqrt(2));
                             }
-                            else if(gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/Math.sqrt(2)/2), mHeroPosY - (mHeroSize/Math.sqrt(2)/2));
-                                mNewHero.setVX(mAcceleration/Math.sqrt(2));
-                                mNewHero.setVY(-mAcceleration/Math.sqrt(2));
+                            else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize / Math.sqrt(2) / 2), mHeroPosY - (mHeroSize / Math.sqrt(2) / 2));
+                                mNewHero.setVX(mAcceleration / Math.sqrt(2));
+                                mNewHero.setVY(-mAcceleration / Math.sqrt(2));
                             }
-                            else{
-                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX, mHeroPosY - (mHeroSize/2));
+                            else {
+                                var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX, mHeroPosY - (mHeroSize / 2));
                                 mNewHero.setVX(mHeroVx);
                                 mNewHero.setVY(-mAcceleration);
                             }
                         }
-                        else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)){
-                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize/2), mHeroPosY);
+                        else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.A) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Left)) {
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX - (mHeroSize / 2), mHeroPosY);
                             mNewHero.setVX(-mAcceleration);
                             mNewHero.setVY(mHeroVy);
                         }
-                        else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)){
-                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/2), mHeroPosY);
+                        else if (gEngine.Input.isKeyPressed(gEngine.Input.keys.D) || gEngine.Input.isKeyPressed(gEngine.Input.keys.Right)) {
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize / 2), mHeroPosY);
                             mNewHero.setVX(+mAcceleration);
                             mNewHero.setVY(mHeroVy);
                         }
                         else {
-                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize/4), mHeroPosY);
-                            obj.getXform().setPosition(mHeroPosX - (mHeroSize/4), mHeroPosY);
-                            mNewHero.setVX(mAcceleration/2);
+                            var mNewHero = new Hero(this.kTeen, mHeroWeight, mHeroPosX + (mHeroSize / 4), mHeroPosY);
+                            obj.getXform().setPosition(mHeroPosX - (mHeroSize / 4), mHeroPosY);
+                            mNewHero.setVX(mAcceleration / 2);
                             mNewHero.setVY(0);
-                            obj.setVX(-mAcceleration/2);
+                            obj.setVX(-mAcceleration / 2);
                             obj.setVY(0);
                         }
                         this.mAllHeros.addToSet(mNewHero);
                     }
-                    if(this.mAllHeros.size() >= 8) {
+                    if (this.mAllHeros.size() >= 8) {
                         break;
                     }
                 }
             }
-        }        
+        }
     }
 
 };
@@ -377,11 +392,11 @@ Level2.prototype.foodUpdate = function () {
         var hero = this.mAllHeros.getObjectAt(i);
         for (let j = 0; j < this.mAllFood.size(); j++) {
             food = this.mAllFood.getObjectAt(j);
-            if (Math.sqrt(Math.pow(hero.getXform().getXPos()-food.getXform().getXPos(),2)+Math.pow(hero.getXform().getYPos()-food.getXform().getYPos(),2)) < hero.getHeroRadius()+food.getFoodRadius()) {
+            if (Math.sqrt(Math.pow(hero.getXform().getXPos() - food.getXform().getXPos(), 2) + Math.pow(hero.getXform().getYPos() - food.getXform().getYPos(), 2)) < hero.getHeroRadius() + food.getFoodRadius()) {
                 gEngine.AudioClips.playACue(this.kCue); //播放cue声音
                 hero.incWeight(food.getWeight());
                 food.setPos();
-                if(hero.getWeight() >= this.weight && this.mAllComps.size()===0){
+                if (hero.getWeight() >= this.weight && this.mAllComps.size() === 0) {
                     this.mRestart = true;
                     this.tag = 3;
                     gEngine.AudioClips.stopBackgroundAudio();
@@ -396,7 +411,7 @@ Level2.prototype.foodUpdate = function () {
         var comp = this.mAllComps.getObjectAt(i);
         for (let j = 0; j < this.mAllFood.size(); j++) {
             food = this.mAllFood.getObjectAt(j);
-            if (Math.sqrt(Math.pow(comp.getXform().getXPos()-food.getXform().getXPos(),2)+Math.pow(comp.getXform().getYPos()-food.getXform().getYPos(),2)) < comp.getCompetitorRadius()+food.getFoodRadius()) {
+            if (Math.sqrt(Math.pow(comp.getXform().getXPos() - food.getXform().getXPos(), 2) + Math.pow(comp.getXform().getYPos() - food.getXform().getYPos(), 2)) < comp.getCompetitorRadius() + food.getFoodRadius()) {
                 comp.incWeight(food.getWeight());
                 food.setPos();
             }
@@ -419,29 +434,29 @@ Level2.prototype.foodUpdate = function () {
 };
 
 //更新黑洞
-Level2.prototype.BlackholeUpdate = function(){
+Level2.prototype.BlackholeUpdate = function () {
     var info = new CollisionInfo();
-    for(let i = 0; i < this.mAllHeros.size(); i++){
+    for (let i = 0; i < this.mAllHeros.size(); i++) {
         var hero = this.mAllHeros.getObjectAt(i);
-        for(let j = 0; j < this.mAllBlackhole.size(); j++){
+        for (let j = 0; j < this.mAllBlackhole.size(); j++) {
             var blackhole = this.mAllBlackhole.getObjectAt(j);
             if (hero.getRigidBody().collisionTest(blackhole.getRigidBody(), info)) {
                 //Begin判断是否全部的球都碰到黑洞
                 var allCollision = true;
-                for(let t = 0; t < this.mAllHeros.size(); t++){
+                for (let t = 0; t < this.mAllHeros.size(); t++) {
                     var chero = this.mAllHeros.getObjectAt(t);
-                    if (!(chero.getRigidBody().collisionTest(blackhole.getRigidBody(), info))){
+                    if (!(chero.getRigidBody().collisionTest(blackhole.getRigidBody(), info))) {
                         allCollision = false;
                         break;
                     }
                 }
-                if(allCollision === true){
+                if (allCollision === true) {
                     // console.log("coll");
                     var transPosX = Math.random() * 400 - 200;//512-256
                     var transPosY = Math.random() * 400 - 200;
 
                     //所有球都碰到黑洞，则可以移动球了
-                    for(let t = 0; t < this.mAllHeros.size(); t++){
+                    for (let t = 0; t < this.mAllHeros.size(); t++) {
                         var chero = this.mAllHeros.getObjectAt(t);
                         chero.getXform().setPosition(transPosX, transPosY);
                         chero.setControl(false);
@@ -454,10 +469,10 @@ Level2.prototype.BlackholeUpdate = function(){
                 hero.setVY(0.3);
                 hero.setControl(true);
                 this.outControl = true;
-                for(let k = 0; k < this.mAllHeros.size(); k++){
+                for (let k = 0; k < this.mAllHeros.size(); k++) {
                     var otherhero = this.mAllHeros.getObjectAt(k);
                     otherhero.setControl(true);
-                    if(otherhero.getRigidBody().collisionTest(blackhole.getRigidBody(), info)){
+                    if (otherhero.getRigidBody().collisionTest(blackhole.getRigidBody(), info)) {
                         // console.log("TRUE",k);
                         continue;
                     }
@@ -479,14 +494,14 @@ Level2.prototype.BlackholeUpdate = function(){
 };
 
 
-Level2.prototype.calculateMinFood = function(posX, posY){
-    var px, py, res=-1;
+Level2.prototype.calculateMinFood = function (posX, posY) {
+    var px, py, res = -1;
     var minValue = 900000;
-    for(let i=0; i<this.mAllFood.size(); i++){
+    for (let i = 0; i < this.mAllFood.size(); i++) {
         px = this.mAllFood.getObjectAt(i).getXform().getXPos();
         py = this.mAllFood.getObjectAt(i).getXform().getYPos();
-        var tmp = Math.pow(posX-px, 2) + Math.pow(posY-py, 2);
-        if(tmp < minValue){
+        var tmp = Math.pow(posX - px, 2) + Math.pow(posY - py, 2);
+        if (tmp < minValue) {
             minValue = tmp;
             res = i;
         }
@@ -495,40 +510,40 @@ Level2.prototype.calculateMinFood = function(posX, posY){
 };
 
 
-Level2.prototype.dectectMinHero = function(posX, posY, radius){
-    var px, py, res=-1;
+Level2.prototype.dectectMinHero = function (posX, posY, radius) {
+    var px, py, res = -1;
     var minValue = this.minValue;
     const range = 20;   //在30*2的方格内探测
 
     //找到距离我最近的hero
-    for(let i=0; i<this.mAllHeros.size(); i++){
+    for (let i = 0; i < this.mAllHeros.size(); i++) {
         px = this.mAllHeros.getObjectAt(i).getXform().getXPos();
         py = this.mAllHeros.getObjectAt(i).getXform().getYPos();
-        var tmp = Math.pow(posX-px, 2) + Math.pow(posY-py, 2);
-        if(tmp < minValue){
+        var tmp = Math.pow(posX - px, 2) + Math.pow(posY - py, 2);
+        if (tmp < minValue) {
             minValue = tmp;
             res = i;
         }
     }
 
     // 警戒范围内无hero
-    if(res === -1){
-        try{
+    if (res === -1) {
+        try {
             return this.calculateMinFood(posX, posY);
-        }catch(err){
+        } catch (err) {
             console.log(err);
-            return [0,0];
+            return [0, 0];
         }
-    }else{
+    } else {
         px = this.mAllHeros.getObjectAt(res).getXform().getXPos();
         py = this.mAllHeros.getObjectAt(res).getXform().getYPos();
         var hero = this.mAllHeros.getObjectAt(res);
-        if(hero.getHeroRadius() >= radius){
+        if (hero.getHeroRadius() >= radius) {
             //反方向的跑
-            return [posX*2-px, posY*2-py];
-        }else{
+            return [posX * 2 - px, posY * 2 - py];
+        } else {
             //追着hero跑
-            return [px,py];
+            return [px, py];
         }
     }
 };
@@ -536,11 +551,11 @@ Level2.prototype.dectectMinHero = function(posX, posY, radius){
 
 Level2.prototype.compUpdate = function () {
     const rate = 1;
-    for(let i=0; i < this.mAllComps.size(); i++){
+    for (let i = 0; i < this.mAllComps.size(); i++) {
         var posX = this.mAllComps.getObjectAt(i).getXform().getXPos();
         var posY = this.mAllComps.getObjectAt(i).getXform().getYPos();
         var radius = this.mAllComps.getObjectAt(i).getCompetitorRadius();
-        var pos = this.dectectMinHero(posX, posY,radius);
+        var pos = this.dectectMinHero(posX, posY, radius);
         var dir = this.mAllComps.getObjectAt(i).discreteDirection(pos);
         this.mAllComps.getObjectAt(i).changePicture(dir);
         GameObject.prototype.compUpdate.call(this.mAllComps.getObjectAt(i));
@@ -548,31 +563,31 @@ Level2.prototype.compUpdate = function () {
 };
 
 
-Level2.prototype.detectCollision = function(){
+Level2.prototype.detectCollision = function () {
     //碰到敌人
     var info = new CollisionInfo();
-    for(let j=0; j<this.mAllComps.size(); j++){
+    for (let j = 0; j < this.mAllComps.size(); j++) {
         for (let i = 0; i < this.mAllHeros.size(); i++) {
             var hero = this.mAllHeros.getObjectAt(i);
             var comp = this.mAllComps.getObjectAt(j);
             if (hero.getRigidBody().collisionTest(comp.getRigidBody(), info)) {
-                if(hero.radius > comp.radius){
+                if (hero.radius > comp.radius) {
                     hero.incWeight(comp.getWeight());
                     this.mAllComps.removeFromSet(comp);
                     j--;    //从set中删除后在下一轮循环下标会加1，因此提前减1
-                    if(hero.getWeight() >= this.weight && this.mAllComps.size() === 0){
+                    if (hero.getWeight() >= this.weight && this.mAllComps.size() === 0) {
                         this.mRestart = true;
                         this.tag = 3;
                         gEngine.AudioClips.stopBackgroundAudio();
                         gEngine.GameLoop.stop();
                     }
-                }else if(hero.radius < comp.radius){
+                } else if (hero.radius < comp.radius) {
                     comp.incWeight(hero.getWeight());
                     this.mAllHeros.removeFromSet(hero);
                     i--;
                 }
 
-                if(this.mAllHeros.size() === 0){
+                if (this.mAllHeros.size() === 0) {
                     this.mRestart = true;
                     this.tag = 5;
                     gEngine.AudioClips.stopBackgroundAudio();
@@ -590,45 +605,54 @@ Level2.prototype.txtUpdate = function () {
         var hero = this.mAllHeros.getObjectAt(i);
         this.mBobWeight += hero.getWeight();
     }
-    var msg ="Weight:" + Math.floor(this.mBobWeight);
+    var msg = "Weight:" + Math.floor(this.mBobWeight);
     this.mMsg.setText(msg);
 };
 
-Level2.prototype.clockUpdate = function(){
+Level2.prototype.clockUpdate = function () {
     this.mClock.update();
     this.mTime = this.mClock.getTime(); //返回剩余的时间
-    if(this.mTime === 0){
+    if (this.mTime === 0) {
         this.mRestart = true;
         this.tag = 5;
         gEngine.AudioClips.stopBackgroundAudio();
         gEngine.GameLoop.stop();
     }
 
-    var msg ="Time:" + this.mTime + "s";
+    var msg = "Time:" + this.mTime + "s";
     this.mMsgTime.setText(msg);
 };
 
 Level2.prototype.update = function () {
-    this.cameraUpdate();    //更新摄像机大小、中心位置
-    this.mCamera.update();
-    this.mMinimap.update();
-    this.mMinitxt.update();
+    this.mClockLag.update();
+    this.mTime1 = this.mClockLag.getTime();
+    if (this.mTime1 === 0) {
+        //画背景
+        this.flag = true;
+    }
+    if (this.flag === true) {
 
-    gEngine.Physics.processCollision(this.mAllHeros, this.mCollisionInfos);
-    gEngine.Physics.processCollision(this.mAllComps, this.mCollisionInfos);
+        this.cameraUpdate();    //更新摄像机大小、中心位置
+        this.mCamera.update();
+        this.mMinimap.update();
+        this.mMinitxt.update();
+
+        gEngine.Physics.processCollision(this.mAllHeros, this.mCollisionInfos);
+        gEngine.Physics.processCollision(this.mAllComps, this.mCollisionInfos);
 
 
-    this.clockUpdate();     //更新剩余的时间
-    this.foodUpdate();      //判断食物是否被吃、更新食物
-    this.heroUpdate();      //hero 分裂、聚合
-    this.compUpdate();      //comp 的位置更新
-    this.detectCollision(); //判断hero、comp是否碰撞
-    this.BlackholeUpdate();
-    this.txtUpdate();       //计算当下Bob重量
-    
-    this.mAllBlackhole.updateSpitball();
-    this.mAllHeros.update(this.centerX, this.centerY);  //hero 的键盘响应以及自动聚合
-    this.mAllComps.updateSpitball();
-    this.mAllSpitBall.updateSpitball();
+        this.clockUpdate();     //更新剩余的时间
+        this.foodUpdate();      //判断食物是否被吃、更新食物
+        this.heroUpdate();      //hero 分裂、聚合
+        this.compUpdate();      //comp 的位置更新
+        this.detectCollision(); //判断hero、comp是否碰撞
+        this.BlackholeUpdate();
+        this.txtUpdate();       //计算当下Bob重量
+
+        this.mAllBlackhole.updateSpitball();
+        this.mAllHeros.update(this.centerX, this.centerY);  //hero 的键盘响应以及自动聚合
+        this.mAllComps.updateSpitball();
+        this.mAllSpitBall.updateSpitball();
+    }
 };
 
