@@ -494,7 +494,6 @@ Level3.prototype.followBob = function(posX,posY){
 Level3.prototype.dectectMinHero = function(posX, posY, radius){
     var px, py, res=-1;
     var minValue = 9000;
-    const range = 20;   //在30*2的方格内探测
 
     //找到距离我最近的hero
     for(let i=0; i<this.mAllHeros.size(); i++){
@@ -617,6 +616,7 @@ Level3.prototype.detectCollision = function(){
 
     //Alice 碰到敌人就死
     for(let j=0; j<this.mAllComps.size(); j++){
+        var comp = this.mAllComps.getObjectAt(j);
         if (this.mAlice.getRigidBody().collisionTest(comp.getRigidBody(), info)) {
             this.mRestart = true;
             this.tag = 5;
