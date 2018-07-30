@@ -416,7 +416,7 @@ Level2.prototype.foodUpdate = function () {
     }
 };
 
-
+//更新黑洞
 Level2.prototype.BlackholeUpdate = function(){
     var info = new CollisionInfo();
     for(let i = 0; i < this.mAllHeros.size(); i++){
@@ -424,34 +424,41 @@ Level2.prototype.BlackholeUpdate = function(){
         for(let j = 0; j < this.mAllBlackhole.size(); j++){
             var blackhole = this.mAllBlackhole.getObjectAt(j);
             if (hero.getRigidBody().collisionTest(blackhole.getRigidBody(), info)) {
-                var allCollision = false;
+                //Begin判断是否全部的球都碰到黑洞
+                var allCollision = true;
                 for(let t = 0; t < this.mAllHeros.size(); t++){
                     var chero = this.mAllHeros.getObjectAt(t);
                     if (!(chero.getRigidBody().collisionTest(blackhole.getRigidBody(), info))){
                         allCollision = false;
                         break;
                     }
-                    allCollision = true;
                 }
                 if(allCollision === true){
-                    var transPosX = Math.random() * 430 - 215;
-                    var transPosY = Math.random() * 430 - 215;
+                    // console.log("coll");
+                    var transPosX = Math.random() * 400 - 200;//512-256
+                    var transPosY = Math.random() * 200 - 200;
+
+                    //所有球都碰到黑洞，则可以移动球了
                     for(let t = 0; t < this.mAllHeros.size(); t++){
                         var chero = this.mAllHeros.getObjectAt(t);
                         chero.getXform().setPosition(transPosX, transPosY);
                         chero.setControl(false);
-                    }                    this.outControl = false;
+                    }
+                    this.outControl = false;    //默认false：可以控制Bob
                     break;
                 }
+
                 hero.setVX(0);
                 hero.setVY(0.3);
                 hero.setControl(true);
                 this.outControl = true;
                 for(let k = 0; k < this.mAllHeros.size(); k++){
                     var otherhero = this.mAllHeros.getObjectAt(k);
-                    if(otherhero.getControl() === true)
-                        continue;
                     otherhero.setControl(true);
+                    if(otherhero.getRigidBody().collisionTest(blackhole.getRigidBody(), info)){
+                        // console.log("TRUE",k);
+                        continue;
+                    }
                     var mheroPosX = hero.getXform().getXPos();
                     var mheroPosY = hero.getXform().getYPos();
                     var otherHeroPosX = otherhero.getXform().getXPos();
@@ -462,11 +469,13 @@ Level2.prototype.BlackholeUpdate = function(){
                     otherhero.getRigidBody().setVelocity(mAcceleration * otherHeroVx, mAcceleration * otherHeroVy);
                     otherhero.setVX(mAcceleration * otherHeroVx);
                     otherhero.setVY(mAcceleration * otherHeroVy);
+
                 }
             }
         }
     }
 };
+
 
 Level2.prototype.calculateMinFood = function(posX, posY){
     var px, py, res=-1;
