@@ -236,8 +236,8 @@ Hero.prototype.keyControl = function (centerX, centerY) {
         y = y / Math.sqrt(x*x + y*y);
 
         if(!isNaN(x)&& !isNaN(y)){
-            this.vX = 5*speed * x;
-            this.vY = 5*speed * y;
+            this.vX = 20*speed * x;
+            this.vY = 20*speed * y;
         }
     }
 }
