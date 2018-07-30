@@ -249,6 +249,7 @@ Level1.prototype.heroUpdate = function () {
             if (objI.getRigidBody().collisionTest(objJ.getRigidBody(), info)) {
                 this.mAllHeros.removeFromSet(objJ);
                 objI.incWeight(objJ.getWeight());
+                j--;
             }
         }
     }
@@ -564,6 +565,7 @@ Level1.prototype.detectCollision = function(){
                 }else if(hero.radius < comp.radius){
                     comp.incWeight(hero.getWeight());
                     this.mAllHeros.removeFromSet(hero);
+                    i--;
                 }
 
                 if(this.mAllHeros.size() === 0){
