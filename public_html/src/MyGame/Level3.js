@@ -94,7 +94,7 @@ Level3.prototype.initialize = function () {
     this.height = 600;
     this.centerX = 0;
     this.centerY = 0;
-    this.mTime = 180;
+    this.mTime = 200;
     this.mClock = new Clock(this.mTime);
 
     //新建摄像机
