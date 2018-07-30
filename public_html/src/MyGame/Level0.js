@@ -110,6 +110,7 @@ Level0.prototype.unloadScene = function () {
 
 
 Level0.prototype.initialize = function () {
+    document.getElementById('info').innerText = "Follow the instructions to learn how to play the game! ";
     this.width = 800;
     this.height = 600;
     this.centerX = 0;

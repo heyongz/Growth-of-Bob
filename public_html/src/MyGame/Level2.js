@@ -87,6 +87,7 @@ Level2.prototype.unloadScene = function () {
 
 
 Level2.prototype.initialize = function () {
+    document.getElementById('info').innerText = "Success conditions: weight more than 100 and defeat all the competitors\n";
     this.width = 800;
     this.height = 600;
     this.centerX = 0;
@@ -175,7 +176,7 @@ Level2.prototype.draw = function () {
     //txt
     this.mMinitxt.setupViewProjection();
     this.mMsg.draw(this.mMinitxt);
-    this.mMsgTime.draw(this.mMinitxt);;
+    this.mMsgTime.draw(this.mMinitxt);
 };
 
 
@@ -436,7 +437,7 @@ Level2.prototype.BlackholeUpdate = function(){
                 if(allCollision === true){
                     // console.log("coll");
                     var transPosX = Math.random() * 400 - 200;//512-256
-                    var transPosY = Math.random() * 200 - 200;
+                    var transPosY = Math.random() * 400 - 200;
 
                     //所有球都碰到黑洞，则可以移动球了
                     for(let t = 0; t < this.mAllHeros.size(); t++){

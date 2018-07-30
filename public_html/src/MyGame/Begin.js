@@ -20,6 +20,7 @@ function Begin() {
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kCue = "assets/sounds/cue.wav";
     this.kEat = "assets/sounds/eat.wav";
+    this.tag = 0;
 }
 gEngine.Core.inheritPrototype(Begin, Scene);
 
@@ -43,9 +44,20 @@ Begin.prototype.unloadScene = function () {
     gEngine.AudioClips.unloadAudio(this.kCue);
 
     if (this.mRestart === true){
-        gEngine.Core.startScene(new Level0());
-    }else{
-        gEngine.Core.startScene(new End(this.kHelp, 0));
+        var nextLevel;  // next level to be loaded
+        switch(this.tag)
+        {
+            case 1:
+                nextLevel = new Level0();
+                break;
+            case 2:
+                nextLevel = new End(this.kHelp, 0);
+                break;
+            case 3:
+                nextLevel = new choose();
+                break;
+        }
+        gEngine.Core.startScene(nextLevel);
     }
 };
 
@@ -64,13 +76,16 @@ Begin.prototype.initialize = function () {
     this.mBackground = new Fail(this.kBackground);
 
     this.mTextConS = new FontRenderable("START");
-    this._initText(this.mTextConS, 0, -150, [0.5, 0.5, 0.5, 0.5], 50);
+    this._initText(this.mTextConS, 0, -50, [0.5, 0.5, 0.5, 0.5], 50);
 
     this.mTextConH = new FontRenderable("HELP");
-    this._initText(this.mTextConH, 0, -220, [0.5, 0.5, 0.5, 1], 50);
+    this._initText(this.mTextConH, 0, -120, [0.5, 0.5, 0.5, 1], 50);
+
+    this.mTextConM = new FontRenderable("Menu");
+    this._initText(this.mTextConM, 0, -190, [0.5, 0.5, 0.5, 1], 50);
 
     this.mTextConC = new FontRenderable("Choose > ");
-    this._initText(this.mTextConC, -250, -150, [0.5, 0.5, 0.5, 0.5], 50);
+    this._initText(this.mTextConC, -250, -50, [0.5, 0.5, 0.5, 0.5], 50);
 
 };
 
@@ -91,6 +106,7 @@ Begin.prototype.draw = function () {
     this.mTextConS.draw(this.mCamera);
     this.mTextConH.draw(this.mCamera);
     this.mTextConC.draw(this.mCamera);
+    this.mTextConM.draw(this.mCamera);
 };
 
 // The Update function, updates the application state. Make sure to _NOT_ draw
@@ -101,13 +117,14 @@ Begin.prototype.update = function () {
         this.mTextConS.setColor([0, 0, 0, 1]);
 
         if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Down))
-        {   this.mTextConC.getXform().setYPos(-220);
+        {   this.mTextConC.getXform().setYPos(-120);
             this.mTextConS.setColor([0.5, 0.5, 0.5, 1]);
             this.mTextConH.setColor([0, 0, 0, 1]);
         }
         //start
         else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Backspace)){
             this.mRestart = true;
+            this.tag = 1;
             gEngine.GameLoop.stop();
         }
     }
@@ -117,12 +134,37 @@ Begin.prototype.update = function () {
 
 
         if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Up)){
-            this.mTextConC.getXform().setYPos(-150);
+            this.mTextConC.getXform().setYPos(-50);
             this.mTextConH.setColor([0.5, 0.5, 0.5, 1]);
             this.mTextConS.setColor([0, 0, 0, 1]);
+            this.mTextConM.setColor([0.5, 0.5, 0.5, 1]);
+        }
+        else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Down)){
+            this.mTextConC.getXform().setYPos(-190);
+            this.mTextConH.setColor([0.5, 0.5, 0.5, 1]);
+            this.mTextConS.setColor([0.5, 0.5, 0.5, 1]);
+            this.mTextConM.setColor([0, 0, 0, 1]);
         }
         else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Backspace)){
-            this.mRestart = false;
+            this.mRestart = true;
+            this.tag = 2;
+            gEngine.GameLoop.stop();
+        }
+    }
+
+    else if(this.mTextConC.getXform().getYPos()===this.mTextConM.getXform().getYPos())
+    {
+
+
+        if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Up)){
+            this.mTextConC.getXform().setYPos(-120);
+            this.mTextConH.setColor([0, 0, 0, 1]);
+            this.mTextConS.setColor([0.5, 0.5, 0.5, 1]);
+            this.mTextConM.setColor([0.5, 0.5, 0.5, 1]);
+        }
+        else if(gEngine.Input.isKeyClicked(gEngine.Input.keys.Backspace)){
+            this.mRestart = true;
+            this.tag = 3;
             gEngine.GameLoop.stop();
         }
     }

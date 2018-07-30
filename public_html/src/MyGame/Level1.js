@@ -87,6 +87,7 @@ Level1.prototype.unloadScene = function () {
 
 
 Level1.prototype.initialize = function () {
+    document.getElementById('info').innerText = "Success conditions: weight more than 50 and defeat one competitor";
     this.width = 800;
     this.height = 600;
     this.centerX = 0;
