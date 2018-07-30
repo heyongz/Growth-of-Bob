@@ -16,7 +16,7 @@ function Fail(spriteTexture) {
     this.mDye.setColor([1, 1, 1, 0]);
     this.mDye.getXform().setPosition(0, 0);
     this.mDye.getXform().setSize(1024, 750);
-    this.mDye.setElementPixelPositions(0, 1024, 0, 512);
+    this.mDye.setElementPixelPositions(0, 1024, 0, 1024);
     GameObject.call(this, this.mDye);
 }
 gEngine.Core.inheritPrototype(Fail, GameObject);

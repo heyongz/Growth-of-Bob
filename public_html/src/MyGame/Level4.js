@@ -4,6 +4,8 @@ function Level4() {
     this.kAdult = "assets/pictures/Adult.png";
     this.kAlice = "assets/pictures/Alice.png";
     this.kBlackhole = "assets/pictures/Blackhole.png";
+    this.kBobwin = "assets/pictures/Bobwin.png";
+    this.kAlicewin = "assets/pictures/Alicewin.png";
     this.kBgClip = "assets/sounds/BGClip.mp3";
     this.kFood = "assets/pictures/food.png";
     this.kBoom = "assets/pictures/boom.png";
@@ -46,6 +48,8 @@ gEngine.Core.inheritPrototype(Level4, Scene);
 Level4.prototype.loadScene = function () {
     gEngine.Textures.loadTexture(this.kAdult);
     gEngine.Textures.loadTexture(this.kAlice);
+    gEngine.Textures.loadTexture(this.kBobwin);
+    gEngine.Textures.loadTexture(this.kAlicewin);
 
     gEngine.Textures.loadTexture(this.kFood);
     gEngine.Textures.loadTexture(this.kBoom);
@@ -60,6 +64,8 @@ Level4.prototype.unloadScene = function () {
     gEngine.LayerManager.cleanUp();
     gEngine.Textures.unloadTexture(this.kAdult);
     gEngine.Textures.unloadTexture(this.kAlice);
+    gEngine.Textures.unloadTexture(this.kBobwin);
+    gEngine.Textures.unloadTexture(this.kAlicewin);
 
     gEngine.Textures.unloadTexture(this.kFood);
      gEngine.Textures.unloadTexture(this.kBoom);
@@ -73,10 +79,10 @@ Level4.prototype.unloadScene = function () {
         switch(this.tag)
         {
             case 1:
-                nextLevel = new Level1();   //bob胜利
+                nextLevel = new End(this.kBobwin);   //bob胜利
                 break;
             case 2:
-                nextLevel = new Level2();   //Alice胜利
+                nextLevel = new End(this.kAlicewin);   //Alice胜利
                 break;
         }
         gEngine.Core.startScene(nextLevel);
@@ -629,12 +635,6 @@ for (let i = 0; i < this.mAllHeros.size(); i++) {
         if (Math.sqrt(Math.pow(hero.getXform().getXPos() - food.getXform().getXPos(), 2) + Math.pow(hero.getXform().getYPos() - food.getXform().getYPos(), 2)) < hero.getHeroRadius() + food.getFoodRadius()) {
             gEngine.AudioClips.playACue(this.kCue); //播放cue声音
             hero.incWeight(food.getWeight());
-            // if (hero.getWeight() >= this.weight && this.mAllComps.size() === 0) {
-            //     this.mRestart = true;
-            //     this.tag = 2;
-            //
-            //     gEngine.GameLoop.stop();
-            // }
             food.setPos();
         }
     }
@@ -648,12 +648,6 @@ for (let i = 0; i < this.mAllComps.size(); i++) {
         if (Math.sqrt(Math.pow(hero.getXform().getXPos() - food.getXform().getXPos(), 2) + Math.pow(hero.getXform().getYPos() - food.getXform().getYPos(), 2)) < hero.getHeroRadius() + food.getFoodRadius()) {
             gEngine.AudioClips.playACue(this.kCue); //播放cue声音
             hero.incWeight(food.getWeight());
-            // if (hero.getWeight() >= this.weight && this.mAllComps.size() === 0) {
-            //     this.mRestart = true;
-            //     this.tag = 2;
-            //
-            //     gEngine.GameLoop.stop();
-            // }
             food.setPos();
         }
     }
@@ -806,7 +800,6 @@ Level4.prototype.BlackholeUpdate = function(){
                     var otherhero = this.mAllComps.getObjectAt(k);
                     otherhero.setControl(true);
                     if(otherhero.getRigidBody().collisionTest(blackhole.getRigidBody(), info)){
-                        // console.log("TRUE",k);
                         continue;
                     }
                     var mheroPosX = hero.getXform().getXPos();
@@ -828,14 +821,11 @@ Level4.prototype.BlackholeUpdate = function(){
 Level4.prototype.update = function () {
     this.cameraUpdate();    //更新摄像机大小、中心位置
     this.mCamera.update();
-
     this.mMinitxt.update();
-
 
     gEngine.Physics.processCollision(this.mAllHeros, this.mCollisionInfos);
     gEngine.Physics.processCollision(this.mAllComps, this.mCollisionInfos);
 
-    // this.clockUpdate();     //更新剩余的时间
     this.foodUpdate();      //判断食物是否被吃、更新食物
     this.heroUpdate();      //hero 分裂、聚合
     this.boomUpdate();
