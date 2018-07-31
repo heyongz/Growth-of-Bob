@@ -192,7 +192,7 @@ Level1.prototype.draw = function () {
         this.mMinimap.setupViewProjection();
         this.mAllComps.draw(this.mMinimap);
         this.mAllHeros.draw(this.mMinimap);
-        this.mAllBoom.draw(this.mMinimap);
+        // this.mAllBoom.draw(this.mMinimap);
         this.mAllFood.draw(this.mMinimap);
         this.mAllSpitBall.draw(this.mMinimap);
 
